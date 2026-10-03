@@ -1,0 +1,3729 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Avoiding Checkmate is a short leadership and decision-making simulation based on a local chess club's annual budget."
+    />
+    <meta name="theme-color" content="#17211f" />
+    <title>Avoiding Checkmate! — A Leadership Simulation</title>
+    <style>
+:root {
+  --ink: #17211f;
+  --muted: #5f6966;
+  --paper: #f6f2e8;
+  --paper-strong: #fffdf8;
+  --line: #d7d2c6;
+  --green: #1c6254;
+  --green-dark: #12453b;
+  --green-pale: #e4f0eb;
+  --status-green: #237a45;
+  --status-green-dark: #155b31;
+  --status-green-pale: #e8f5ec;
+  --status-green-line: #79ad88;
+  --status-amber: #a45f00;
+  --status-amber-dark: #754300;
+  --status-amber-pale: #fff2d2;
+  --status-amber-line: #d49a35;
+  --status-red: #a63232;
+  --status-red-dark: #792323;
+  --status-red-pale: #fbe7e5;
+  --status-red-line: #cc7772;
+  --gold: #bd7b2a;
+  --gold-pale: #f5ead5;
+  --red: #a33f3d;
+  --red-pale: #f7e5e2;
+  --blue: #3c6070;
+  --blue-pale: #e6eef1;
+  --shadow: 0 18px 55px rgba(23, 33, 31, 0.09);
+  --radius: 18px;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 9% 4%, rgba(189, 123, 42, 0.09), transparent 23rem),
+    linear-gradient(180deg, #f8f5ed 0%, var(--paper) 100%);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid rgba(28, 98, 84, 0.28);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  color: #fff;
+  background: var(--ink);
+  border-radius: 8px;
+  transform: translateY(-180%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 82px;
+  padding: 0.85rem clamp(1rem, 4vw, 4.5rem);
+  color: #fff;
+  background: var(--ink);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-mark {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  color: var(--ink);
+  background: #f1d9aa;
+  border-radius: 13px;
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+}
+
+.brand strong,
+.brand small {
+  display: block;
+}
+
+.brand strong {
+  font-family: var(--font-serif);
+  font-size: clamp(1.1rem, 2.2vw, 1.38rem);
+  letter-spacing: 0.01em;
+}
+
+.brand small {
+  margin-top: 0.05rem;
+  color: #c7d0cd;
+  font-size: 0.76rem;
+}
+
+.text-button {
+  padding: 0.45rem 0;
+  color: #dbe3e0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(219, 227, 224, 0.55);
+  font-size: 0.86rem;
+}
+
+.text-button:hover {
+  color: #fff;
+  border-color: #fff;
+}
+
+.progress-shell {
+  overflow-x: auto;
+  color: #d7e0dd;
+  background: #23312e;
+  scrollbar-width: thin;
+}
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+  padding: 0.7rem 1rem;
+  list-style: none;
+}
+
+.progress-steps li {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  color: #92a09c;
+  font-size: 0.76rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.progress-steps li:not(:last-child)::after {
+  width: clamp(1.2rem, 4vw, 3.8rem);
+  height: 1px;
+  margin: 0 clamp(0.4rem, 1vw, 0.8rem);
+  content: "";
+  background: #52605c;
+}
+
+.progress-steps span {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 1px solid #61716c;
+  border-radius: 50%;
+  font-size: 0.68rem;
+}
+
+.progress-steps li.active {
+  color: #fff;
+}
+
+.progress-steps li.active span {
+  color: var(--ink);
+  background: #f1d9aa;
+  border-color: #f1d9aa;
+}
+
+.progress-steps li.complete {
+  color: #bad7cf;
+}
+
+.progress-steps li.complete span {
+  color: #fff;
+  background: var(--green);
+  border-color: #77a89a;
+}
+
+#game-main {
+  width: min(1180px, calc(100% - 2rem));
+  min-height: calc(100vh - 220px);
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 4.5rem) 0 5rem;
+}
+
+.page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(270px, 0.36fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.page-grid-wide {
+  grid-template-columns: minmax(0, 1fr) 330px;
+}
+
+.sticky-column {
+  position: sticky;
+  top: 1.25rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.45rem;
+  color: var(--green);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+h1 {
+  max-width: 18ch;
+  margin-bottom: 1.1rem;
+  font-family: var(--font-serif);
+  font-size: clamp(2.35rem, 6vw, 4.8rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.7rem, 4vw, 2.65rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-size: 1.02rem;
+  line-height: 1.3;
+}
+
+.lead {
+  max-width: 68ch;
+  color: #4e5956;
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 2vw, 1.27rem);
+  line-height: 1.62;
+}
+
+.copy {
+  max-width: 72ch;
+  color: #4f5a57;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.65rem;
+}
+
+.button {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.48rem;
+  padding: 0.75rem 1.05rem;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  font-weight: 750;
+  line-height: 1.15;
+  text-align: center;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.button-primary {
+  color: #fff;
+  background: var(--green);
+  box-shadow: 0 8px 24px rgba(28, 98, 84, 0.2);
+}
+
+.button-primary:hover:not(:disabled) {
+  background: var(--green-dark);
+}
+
+.button-dark {
+  color: #fff;
+  background: var(--ink);
+}
+
+.button-secondary {
+  color: var(--ink);
+  background: var(--paper-strong);
+  border-color: var(--line);
+}
+
+.button-secondary:hover:not(:disabled) {
+  border-color: #9eaaa6;
+}
+
+.button-quiet {
+  color: var(--green-dark);
+  background: transparent;
+  border-color: #abc5bd;
+}
+
+.button-small {
+  min-height: 38px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.briefing-card,
+.side-card,
+.content-card,
+.choice-card,
+.proposal-card,
+.metric-card,
+.quarter-card,
+.review-card,
+.outcome-card {
+  background: rgba(255, 253, 248, 0.92);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.briefing-card {
+  overflow: hidden;
+}
+
+.briefing-visual {
+  position: relative;
+  display: grid;
+  min-height: 360px;
+  place-items: center;
+  overflow: hidden;
+  color: #f9f1df;
+  background:
+    linear-gradient(135deg, rgba(23, 33, 31, 0.9), rgba(28, 98, 84, 0.87)),
+    repeating-conic-gradient(from 45deg, #2f4942 0 25%, #1e302c 0 50%) 50% / 72px 72px;
+}
+
+.briefing-visual::after {
+  position: absolute;
+  width: 255px;
+  height: 255px;
+  content: "";
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+  box-shadow: 0 0 0 42px rgba(255, 255, 255, 0.025), 0 0 0 84px rgba(255, 255, 255, 0.02);
+}
+
+.briefing-piece {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-serif);
+  font-size: 10rem;
+  line-height: 1;
+  text-shadow: 0 18px 30px rgba(0, 0, 0, 0.28);
+}
+
+.briefing-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--line);
+}
+
+.briefing-stat {
+  padding: 1.1rem 1rem;
+  text-align: center;
+}
+
+.briefing-stat:not(:last-child) {
+  border-right: 1px solid var(--line);
+}
+
+.briefing-stat strong,
+.briefing-stat span {
+  display: block;
+}
+
+.briefing-stat strong {
+  font-family: var(--font-serif);
+  font-size: 1.55rem;
+}
+
+.briefing-stat span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.side-card,
+.content-card {
+  padding: 1.2rem;
+}
+
+.side-card + .side-card,
+.content-card + .content-card {
+  margin-top: 1rem;
+}
+
+.side-card h3,
+.content-card h3 {
+  margin-bottom: 0.65rem;
+}
+
+.compact-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: #4f5b58;
+  font-size: 0.88rem;
+}
+
+.compact-list li + li {
+  margin-top: 0.5rem;
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.mode-heading {
+  margin: 1.55rem 0 0.75rem;
+  font-size: 1.3rem;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.mode-card {
+  min-height: 215px;
+}
+
+.mode-card h3 {
+  min-height: 0;
+  margin-top: 0.65rem;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+}
+
+.mode-level {
+  align-self: flex-start;
+  padding: 0.28rem 0.52rem;
+  color: var(--green-dark);
+  background: var(--green-pale);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.choice-card {
+  position: relative;
+  display: flex;
+  min-height: 285px;
+  flex-direction: column;
+  padding: 1.2rem;
+  text-align: left;
+  box-shadow: none;
+  transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+button.choice-card:hover {
+  transform: translateY(-3px);
+  border-color: #9eaaa6;
+  box-shadow: var(--shadow);
+}
+
+.choice-card.selected {
+  border: 2px solid var(--green);
+  box-shadow: 0 0 0 4px rgba(28, 98, 84, 0.1);
+}
+
+.choice-number {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 1rem;
+  place-items: center;
+  color: var(--green-dark);
+  background: var(--green-pale);
+  border-radius: 10px;
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.choice-card h3 {
+  min-height: 2.7em;
+  margin-bottom: 0.75rem;
+}
+
+.choice-card p {
+  margin-bottom: 0;
+  color: #596461;
+  font-size: 0.88rem;
+}
+
+.choice-selected-label {
+  margin-top: auto;
+  padding-top: 1rem;
+  color: var(--green);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.section-heading h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
+.section-heading p {
+  max-width: 44ch;
+  margin-bottom: 0.1rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: right;
+}
+
+.proposal-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.proposal-card {
+  padding: 1.15rem;
+  box-shadow: none;
+}
+
+.proposal-card.funded {
+  border-color: #87aa9f;
+  box-shadow: inset 4px 0 0 var(--green);
+}
+
+.proposal-card.over-budget {
+  border-color: #dca4a0;
+}
+
+.proposal-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.proposal-title-wrap {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.proposal-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: var(--green-dark);
+  background: var(--green-pale);
+  border-radius: 11px;
+  font-size: 1.05rem;
+}
+
+.proposal-card h3 {
+  margin: 0.05rem 0 0.25rem;
+}
+
+.proposal-owner {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.cost-chip,
+.status-chip,
+.expectation-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.cost-chip {
+  color: #674312;
+  background: var(--gold-pale);
+}
+
+.expectation-chip {
+  margin-top: 0.55rem;
+  color: #674312;
+  background: var(--gold-pale);
+}
+
+.status-chip {
+  color: var(--green-dark);
+  background: var(--green-pale);
+}
+
+.proposal-description {
+  margin: 0.9rem 0;
+  color: #505b58;
+  font-size: 0.9rem;
+}
+
+.proposal-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid #e6e1d7;
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.stepper button {
+  display: grid;
+  width: 40px;
+  height: 38px;
+  place-items: center;
+  color: var(--ink);
+  background: #f4f0e7;
+  border: 0;
+  font-size: 1.2rem;
+}
+
+.stepper button:hover:not(:disabled) {
+  background: #eae4d8;
+}
+
+.stepper output {
+  min-width: 74px;
+  padding: 0 0.55rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.range-control {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr auto;
+  gap: 0.55rem 1rem;
+  align-items: center;
+}
+
+.range-control input {
+  width: 100%;
+  accent-color: var(--green);
+}
+
+.range-control output {
+  min-width: 8rem;
+  font-weight: 800;
+  text-align: right;
+}
+
+.range-labels {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.segmented button {
+  min-height: 38px;
+  padding: 0.5rem 0.72rem;
+  color: #44504d;
+  background: #f5f1e8;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.segmented button.active {
+  color: #fff;
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.tournament-options {
+  display: grid;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #485350;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.select-control,
+.text-input,
+.rationale-textarea {
+  width: 100%;
+  color: var(--ink);
+  background: #fffefa;
+  border: 1px solid #cfc9bd;
+  border-radius: 10px;
+}
+
+.select-control,
+.text-input {
+  min-height: 42px;
+  padding: 0.55rem 0.65rem;
+}
+
+.survey-panel {
+  margin: 1.4rem 0 0;
+  padding: 1.1rem;
+  color: #23443d;
+  background: var(--green-pale);
+  border: 1px solid #b8d3ca;
+  border-radius: 14px;
+}
+
+.survey-panel h3 {
+  margin-bottom: 0.35rem;
+}
+
+.survey-panel > p {
+  color: #45615a;
+  font-size: 0.85rem;
+}
+
+.survey-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.survey-result {
+  padding: 0.7rem 0.55rem;
+  background: rgba(255, 255, 255, 0.58);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.survey-result strong,
+.survey-result span {
+  display: block;
+}
+
+.survey-result strong {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+}
+
+.survey-result span {
+  color: #516b64;
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+.budget-card {
+  overflow: hidden;
+  padding: 0;
+}
+
+.budget-total {
+  padding: 1.2rem;
+  color: #fff;
+  background: var(--ink);
+}
+
+.budget-total small,
+.budget-total strong,
+.budget-total span {
+  display: block;
+}
+
+.budget-total small {
+  color: #b9c5c1;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.budget-total strong {
+  margin: 0.15rem 0;
+  font-family: var(--font-serif);
+  font-size: 2.6rem;
+}
+
+.budget-total span {
+  color: #d6dfdc;
+  font-size: 0.8rem;
+}
+
+.budget-total.negative {
+  background: #6f2928;
+}
+
+.budget-progress {
+  height: 7px;
+  overflow: hidden;
+  background: #394743;
+  border-radius: 999px;
+}
+
+.budget-progress span {
+  height: 100%;
+  background: #e5c78e;
+  transition: width 180ms ease;
+}
+
+.budget-lines {
+  margin: 0;
+  padding: 0.75rem 1.2rem 1.1rem;
+  list-style: none;
+}
+
+.budget-lines li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  color: #55605d;
+  border-bottom: 1px solid #ebe6dc;
+  font-size: 0.78rem;
+}
+
+.budget-lines li:last-child {
+  border-bottom: 0;
+}
+
+.budget-lines strong {
+  color: var(--ink);
+}
+
+.warning-box,
+.note-box {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border-radius: 11px;
+  font-size: 0.8rem;
+}
+
+.warning-box {
+  color: #6e2927;
+  background: var(--red-pale);
+  border: 1px solid #e0b3ae;
+}
+
+.note-box {
+  color: #315160;
+  background: var(--blue-pale);
+  border: 1px solid #bfd0d7;
+}
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.summary-table th,
+.summary-table td {
+  padding: 0.68rem 0;
+  border-bottom: 1px solid #e5e0d6;
+  text-align: left;
+}
+
+.summary-table th {
+  color: #5c6764;
+  font-weight: 600;
+}
+
+.summary-table td:last-child,
+.summary-table th:last-child {
+  text-align: right;
+}
+
+.summary-table tfoot th,
+.summary-table tfoot td {
+  color: var(--ink);
+  border-top: 2px solid #bcb6aa;
+  border-bottom: 0;
+  font-weight: 800;
+}
+
+.rationale-form {
+  display: grid;
+  gap: 1.15rem;
+  margin-top: 1.5rem;
+}
+
+.rationale-field {
+  padding: 1.1rem;
+  background: rgba(255, 253, 248, 0.92);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.rationale-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+}
+
+.rationale-field p {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.rationale-textarea {
+  min-height: 130px;
+  padding: 0.75rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.field-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.field-error {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.7rem;
+  margin: 1.4rem 0;
+}
+
+.status-green {
+  --status-color: var(--status-green);
+  --status-color-dark: var(--status-green-dark);
+  --status-color-pale: var(--status-green-pale);
+  --status-color-line: var(--status-green-line);
+}
+
+.status-amber {
+  --status-color: var(--status-amber);
+  --status-color-dark: var(--status-amber-dark);
+  --status-color-pale: var(--status-amber-pale);
+  --status-color-line: var(--status-amber-line);
+}
+
+.status-red {
+  --status-color: var(--status-red);
+  --status-color-dark: var(--status-red-dark);
+  --status-color-pale: var(--status-red-pale);
+  --status-color-line: var(--status-red-line);
+}
+
+.status-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 1.15rem 0 0;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.3rem 0.55rem;
+  color: var(--status-color-dark);
+  background: var(--status-color-pale);
+  border: 1px solid var(--status-color-line);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.legend-item i {
+  width: 0.62rem;
+  height: 0.62rem;
+  background: var(--status-color);
+  border-radius: 50%;
+}
+
+.metric-card {
+  padding: 0.9rem;
+  background: var(--status-color-pale);
+  border-color: var(--status-color-line);
+  box-shadow: none;
+}
+
+.metric-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+
+.metric-card strong,
+.metric-card span {
+  display: block;
+}
+
+.metric-card strong {
+  margin-bottom: 0.1rem;
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+}
+
+.metric-card .metric-label {
+  min-height: 2.2em;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.3;
+}
+
+.performance-label {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 0;
+  align-items: center;
+  padding: 0.2rem 0.46rem;
+  color: #fff;
+  background: var(--status-color);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.metric-card span.performance-label {
+  display: inline-flex;
+  min-height: 0;
+  color: #fff;
+}
+
+.metric-bar {
+  height: 5px;
+  margin-top: 0.55rem;
+  overflow: hidden;
+  background: #e4dfd5;
+  border-radius: 99px;
+}
+
+.metric-bar i {
+  display: block;
+  height: 100%;
+  background: var(--status-color);
+  border-radius: inherit;
+}
+
+.quarter-timeline {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.quarter-card {
+  position: relative;
+  padding: 1.2rem 1.2rem 1.2rem 1.5rem;
+  background: var(--status-color-pale);
+  border-color: var(--status-color-line);
+  box-shadow: none;
+  animation: reveal-card 300ms ease both;
+}
+
+.quarter-card::before {
+  position: absolute;
+  top: 1.2rem;
+  bottom: 1.2rem;
+  left: 0;
+  width: 4px;
+  content: "";
+  background: var(--status-color);
+  border-radius: 0 4px 4px 0;
+}
+
+@keyframes reveal-card {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quarter-label {
+  margin-bottom: 0.25rem;
+  color: var(--status-color-dark);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.quarter-card h3 {
+  margin-bottom: 0.8rem;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+}
+
+.event-paragraph {
+  margin: 0;
+  padding: 0.72rem 0.8rem;
+  color: #4c5754;
+  background: var(--status-amber-pale);
+  border-left: 3px solid var(--status-amber-line);
+  font-size: 0.86rem;
+}
+
+.event-paragraph + .event-paragraph {
+  margin-top: 0.55rem;
+}
+
+.event-paragraph.positive {
+  background: var(--status-green-pale);
+  border-color: var(--status-green);
+}
+
+.event-paragraph.negative {
+  background: var(--status-red-pale);
+  border-color: var(--status-red);
+}
+
+.event-paragraph.critical {
+  color: #fff;
+  background: #6f2928;
+  border-color: #3d1413;
+}
+
+.outcome-card {
+  padding: clamp(1.25rem, 4vw, 2rem);
+  color: #fff;
+  background: var(--status-color-dark);
+  border-color: var(--status-color-dark);
+}
+
+.outcome-card .eyebrow {
+  color: #e5c78e;
+}
+
+.outcome-card h1 {
+  max-width: 23ch;
+  margin-bottom: 0.7rem;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+}
+
+.outcome-card p {
+  max-width: 68ch;
+  margin-bottom: 0;
+  color: #d1dad7;
+}
+
+.outcome-card .outcome-label {
+  margin-top: 1rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.debrief-section {
+  margin-top: 2.5rem;
+}
+
+.debrief-section > h2 {
+  margin-bottom: 0.5rem;
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.review-card {
+  padding: 1.05rem;
+  background: var(--status-color-pale);
+  border-color: var(--status-color-line);
+  box-shadow: none;
+}
+
+.review-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.review-card h3 {
+  margin-bottom: 0.25rem;
+}
+
+.review-score {
+  color: var(--status-color-dark);
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.review-score-wrap {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.review-card p {
+  margin-bottom: 0.7rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.review-bar {
+  height: 7px;
+  overflow: hidden;
+  background: #e6e1d7;
+  border-radius: 999px;
+}
+
+.review-bar span {
+  display: block;
+  height: 100%;
+  background: var(--status-color);
+}
+
+.committee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.committee-person {
+  min-width: 0;
+  padding: 0.78rem;
+  overflow-wrap: anywhere;
+  background: var(--status-color-pale);
+  border: 1px solid var(--status-color-line);
+  border-radius: 12px;
+}
+
+.committee-person strong,
+.committee-person span {
+  display: block;
+}
+
+.committee-person .committee-role {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.committee-person output {
+  display: block;
+  margin-top: 0.45rem;
+  max-width: 100%;
+  color: var(--status-color-dark);
+  font-family: var(--font-serif);
+  font-size: clamp(1.18rem, 2vw, 1.45rem);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.committee-person .performance-label {
+  display: inline-flex;
+  margin-top: 0.45rem;
+  color: #fff;
+}
+
+.rationale-quote {
+  margin: 1rem 0 0;
+  padding: 1rem 1.1rem;
+  color: #485350;
+  background: #f5f1e8;
+  border-left: 4px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  white-space: pre-wrap;
+}
+
+.discussion-list {
+  display: grid;
+  gap: 0.7rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: question;
+}
+
+.discussion-list li {
+  position: relative;
+  padding: 0.9rem 0.9rem 0.9rem 3.2rem;
+  color: #4d5855;
+  background: rgba(255, 253, 248, 0.85);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  counter-increment: question;
+}
+
+.discussion-list li::before {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.85rem;
+  display: grid;
+  width: 1.7rem;
+  height: 1.7rem;
+  place-items: center;
+  content: counter(question);
+  color: var(--green-dark);
+  background: var(--green-pale);
+  border-radius: 50%;
+  font-weight: 850;
+}
+
+.site-footer {
+  padding: 1.2rem 1rem 2rem;
+  color: #74807c;
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.rules-dialog {
+  width: min(680px, calc(100% - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.25);
+}
+
+.rules-dialog::backdrop {
+  background: rgba(15, 23, 21, 0.68);
+  backdrop-filter: blur(3px);
+}
+
+.dialog-card {
+  padding: 1.3rem;
+}
+
+.dialog-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.dialog-heading h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.icon-button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  color: var(--ink);
+  background: #f3efe6;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 1.4rem;
+}
+
+.dialog-copy {
+  padding: 1.1rem 0 0.5rem;
+  color: #4f5a57;
+  font-size: 0.9rem;
+}
+
+.dialog-copy h3 {
+  margin: 1.15rem 0 0.35rem;
+  color: var(--ink);
+}
+
+.dialog-close {
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.toast {
+  position: fixed;
+  z-index: 90;
+  right: 1rem;
+  bottom: 1rem;
+  max-width: min(360px, calc(100% - 2rem));
+  padding: 0.75rem 0.9rem;
+  color: #fff;
+  background: var(--ink);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 880px) {
+  .page-grid,
+  .page-grid-wide {
+    grid-template-columns: 1fr;
+  }
+
+  .sticky-column {
+    position: static;
+    order: -1;
+  }
+
+  .choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mode-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .choice-card {
+    min-height: 0;
+  }
+
+  .choice-card h3 {
+    min-height: 0;
+  }
+
+  .survey-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 620px) {
+  .site-header {
+    align-items: flex-start;
+    padding: 0.8rem 1rem;
+  }
+
+  .brand small {
+    display: none;
+  }
+
+  .brand-mark {
+    width: 38px;
+    height: 38px;
+    font-size: 1.4rem;
+  }
+
+  .text-button {
+    max-width: 8rem;
+    font-size: 0.72rem;
+    text-align: right;
+  }
+
+  #game-main {
+    width: min(100% - 1.2rem, 1180px);
+    padding-top: 2rem;
+  }
+
+  .briefing-visual {
+    min-height: 260px;
+  }
+
+  .briefing-piece {
+    font-size: 7.5rem;
+  }
+
+  .briefing-stat {
+    padding: 0.85rem 0.45rem;
+  }
+
+  .briefing-stat strong {
+    font-size: 1.2rem;
+  }
+
+  .section-heading {
+    display: block;
+  }
+
+  .section-heading p {
+    margin-top: 0.35rem;
+    text-align: left;
+  }
+
+  .proposal-topline,
+  .proposal-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cost-chip {
+    align-self: flex-start;
+  }
+
+  .segmented {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .mode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .survey-grid,
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .review-grid,
+  .committee-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .button-row .button {
+    width: 100%;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .site-header,
+  .progress-shell,
+  .site-footer,
+  .button-row,
+  .toast {
+    display: none !important;
+  }
+
+  #game-main {
+    width: 100%;
+    padding: 0;
+  }
+
+  .outcome-card,
+  .content-card,
+  .review-card,
+  .metric-card {
+    color: #000;
+    background: #fff;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .outcome-card p,
+  .outcome-card .eyebrow {
+    color: #000;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+</style>
+  </head>
+  <body>
+    <a class="skip-link" href="#game-main">Skip to the game</a>
+
+    <header class="site-header">
+      <div class="brand" aria-label="Avoiding Checkmate">
+        <span class="brand-mark" aria-hidden="true">♞</span>
+        <span>
+          <strong>Avoiding Checkmate!</strong>
+          <small>A leadership and decision-making simulation</small>
+        </span>
+      </div>
+      <button class="text-button" id="open-rules" type="button">How the simulation works</button>
+    </header>
+
+    <nav class="progress-shell" aria-label="Game progress">
+      <ol class="progress-steps" id="progress-steps">
+        <li data-step="briefing"><span>1</span> Briefing</li>
+        <li data-step="feedback"><span>2</span> Feedback</li>
+        <li data-step="budget"><span>3</span> Budget</li>
+        <li data-step="reasoning"><span>4</span> Reasoning</li>
+        <li data-step="year"><span>5</span> The year</li>
+        <li data-step="debrief"><span>6</span> Debrief</li>
+      </ol>
+    </nav>
+
+    <main id="game-main" tabindex="-1"></main>
+
+    <footer class="site-footer">
+      <p>
+        Based on <cite>President of the Chess Club</cite>, written by Anand Benegal for MGT 248: Managing and Leading People (Spring 2025, Whitman School of Management, Syracuse University).
+     <p style="margin-top: 0.5rem;">
+    &copy; 2026 Anand Benegal. All rights reserved.
+  </p>
+</footer>
+
+    <dialog id="rules-dialog" class="rules-dialog">
+      <form method="dialog" class="dialog-card">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">Simulation notes</p>
+            <h2>How the simulation works</h2>
+          </div>
+          <button class="icon-button" value="close" aria-label="Close">×</button>
+        </div>
+        <div class="dialog-copy">
+          <h3>Facts retained from the case</h3>
+          <p>
+            The club has $1,000 and 50 regular members. All 50 members want to enter the town tournament. The municipal department has a 20% chance of checking whether the $100 registration fee was paid. The reduced library has a 20% chance of omitting books that members requested.
+          </p>
+          <h3>Rules added for the game</h3>
+          <p>
+            The club needs 15 clocks, which accommodate 30 simultaneous players. Peak attendance varies between 18 and 30 members. If the damaged computer is not repaired, morale declines and there is a 40% chance that half of the club's remaining members leave.
+          </p>
+          <p>
+            If funded, grandmaster coaching has a 55% chance of attracting substantial media attention; the digital package has a 45% chance of recruiting 4–8 new members; and pizza has a 55% chance of recruiting 3–6 new members. These are game assumptions rather than facts supplied by the original case.
+          </p>
+          <h3>Candidate Master and Grandmaster modes</h3>
+          <p>
+            Candidate Master preserves the original, comparatively forgiving outcome rules. Grandmaster assesses the same decisions using a more demanding year-end standard that considers performance across membership, morale, committee support, public reputation, and presidential standing.
+          </p>
+          <p>
+            In Grandmaster mode, the $100 computer repair cost is a preliminary estimate. If you fund the repair, there is a 45% chance that the estimate is accurate. There is a 25% chance that replacing the power supply adds $50, a 20% chance that replacing the storage drive and paying for additional labour adds $100, and a 10% chance that damage to the motherboard adds $150. An unspent reserve can cover this increase. If the reserve is insufficient, hurried reductions elsewhere damage morale, committee support, reputation, and presidential standing.
+          </p>
+          <p>
+            In Grandmaster mode, an avoidable risk may also affect the year-end assessment even when its most serious consequence does not occur. For example, if the club avoids a municipal check after leaving the registration fee unpaid, the decision will remain visible in the year-end accounts.
+          </p>
+          <h3>How the result should be interpreted</h3>
+          <p>
+            The game assesses the decision separately from the outcome. A fortunate outcome does not make an imprudent decision sound, and an unfortunate outcome does not necessarily make a defensible decision unreasonable.
+          </p>
+          <p>
+            Green result cards indicate that the club performed strongly on that measure. Amber cards indicate a mixed result in which important concerns remain. Red cards indicate that the result presents a serious problem.
+          </p>
+        </div>
+        <button class="button button-dark dialog-close" value="close">Return to the game</button>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+(function (root) {
+  "use strict";
+
+  const COSTS = Object.freeze({
+    clock: 5,
+    registration: 100,
+    computer: 100,
+    grandmaster: 300,
+    digital: 200,
+    pizza: 200,
+    accounting: 300,
+    libraryReduced: 200,
+    libraryFull: 500,
+    tournamentEntry: 20,
+  });
+
+  const LIMITS = Object.freeze({
+    budget: 1000,
+    members: 50,
+    clocksNeeded: 15,
+  });
+
+  const MODES = Object.freeze({
+    candidate: "Candidate Master",
+    grandmaster: "Grandmaster",
+  });
+
+  const SURVEY_PROFILES = Object.freeze([
+    {
+      id: "social",
+      grandmaster: 3,
+      digital: 5,
+      pizza: 33,
+      library: 18,
+    },
+    {
+      id: "competitive",
+      grandmaster: 19,
+      digital: 6,
+      pizza: 14,
+      library: 16,
+    },
+    {
+      id: "learning",
+      grandmaster: 6,
+      digital: 3,
+      pizza: 20,
+      library: 32,
+    },
+    {
+      id: "growth",
+      grandmaster: 6,
+      digital: 19,
+      pizza: 15,
+      library: 14,
+    },
+  ]);
+
+  const MEMBER_INITIATIVE_LABELS = Object.freeze({
+    grandmaster: "weekly coaching from a grandmaster",
+    digital: "the website, logo, and streaming package",
+    pizza: "pizza at the weekly meetings",
+    library: "the chess club library",
+  });
+
+  const clamp = (value, minimum = 0, maximum = 100) =>
+    Math.max(minimum, Math.min(maximum, Math.round(value)));
+
+  function mulberry32(seed) {
+    let state = seed >>> 0;
+    return function random() {
+      state += 0x6d2b79f5;
+      let value = state;
+      value = Math.imul(value ^ (value >>> 15), value | 1);
+      value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+      return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function randomInteger(random, minimum, maximum) {
+    return Math.floor(random() * (maximum - minimum + 1)) + minimum;
+  }
+
+  function normalizeSeed(seed) {
+    const numeric = Number(seed);
+    if (Number.isFinite(numeric)) return Math.abs(Math.trunc(numeric)) >>> 0;
+    return 1;
+  }
+
+  function normalizeMode(mode) {
+    return mode === "grandmaster" ? "grandmaster" : "candidate";
+  }
+
+  function getTopMemberInitiative(demand) {
+    return ["grandmaster", "digital", "pizza", "library"].reduce(
+      (best, key) => (demand[key] > demand[best] ? key : best),
+      "grandmaster",
+    );
+  }
+
+  function generateYear(seed, mode = "candidate") {
+    const normalizedSeed = normalizeSeed(seed);
+    const normalizedMode = normalizeMode(mode);
+    const random = mulberry32(normalizedSeed);
+    const base = SURVEY_PROFILES[randomInteger(random, 0, SURVEY_PROFILES.length - 1)];
+    const jitter = () => randomInteger(random, -2, 2);
+    const demand = {
+      grandmaster: clamp(base.grandmaster + jitter(), 0, 50),
+      digital: clamp(base.digital + jitter(), 0, 50),
+      pizza: clamp(base.pizza + jitter(), 0, 50),
+      library: clamp(base.library + jitter(), 0, 50),
+      tournament: 50,
+    };
+
+    const year = {
+      seed: normalizedSeed,
+      mode: normalizedMode,
+      demand,
+      topMemberInitiative: getTopMemberInitiative(demand),
+      peakAttendance: randomInteger(random, 18, 30),
+      computerFailure: random() < 0.4,
+      registrationCheck: random() < 0.2,
+      reducedLibraryMissing: random() < 0.2,
+      grandmasterMediaAttention: random() < 0.55,
+      digitalGrowth: random() < 0.45,
+      digitalRecruits: randomInteger(random, 4, 8),
+      pizzaGrowth: random() < 0.55,
+      pizzaRecruits: randomInteger(random, 3, 6),
+    };
+
+    if (normalizedMode === "grandmaster") {
+      const expenseRoll = random();
+      year.computerRepairOverrun = expenseRoll < 0.45 ? 0 : expenseRoll < 0.7 ? 50 : expenseRoll < 0.9 ? 100 : 150;
+    } else {
+      year.computerRepairOverrun = 0;
+    }
+
+    return year;
+  }
+
+  function createDefaultDecisions() {
+    return {
+      clocks: 0,
+      registration: false,
+      computer: false,
+      grandmaster: false,
+      digital: false,
+      tournament: {
+        mode: "selected",
+        selectedCount: 0,
+        selectedPolicy: "lottery",
+        equalContribution: 0,
+      },
+      pizza: false,
+      accounting: false,
+      library: "none",
+    };
+  }
+
+  function normalizeDecisions(input) {
+    const defaults = createDefaultDecisions();
+    const decisions = Object.assign(defaults, input || {});
+    decisions.tournament = Object.assign(defaults.tournament, input?.tournament || {});
+    decisions.clocks = clamp(Number(decisions.clocks) || 0, 0, LIMITS.clocksNeeded);
+    decisions.tournament.selectedCount = clamp(
+      Number(decisions.tournament.selectedCount) || 0,
+      0,
+      LIMITS.members,
+    );
+    decisions.tournament.equalContribution = clamp(
+      Number(decisions.tournament.equalContribution) || 0,
+      0,
+      COSTS.tournamentEntry,
+    );
+    if (!['selected', 'equal'].includes(decisions.tournament.mode)) {
+      decisions.tournament.mode = 'selected';
+    }
+    if (!['lottery', 'need', 'qualification', 'first'].includes(decisions.tournament.selectedPolicy)) {
+      decisions.tournament.selectedPolicy = 'lottery';
+    }
+    if (!['none', 'reduced', 'full'].includes(decisions.library)) decisions.library = 'none';
+    return decisions;
+  }
+
+  function tournamentCost(decisions) {
+    const tournament = decisions.tournament;
+    return tournament.mode === "equal"
+      ? tournament.equalContribution * LIMITS.members
+      : tournament.selectedCount * COSTS.tournamentEntry;
+  }
+
+  function calculateBudget(input) {
+    const decisions = normalizeDecisions(input);
+    const items = {
+      clocks: decisions.clocks * COSTS.clock,
+      registration: decisions.registration ? COSTS.registration : 0,
+      computer: decisions.computer ? COSTS.computer : 0,
+      grandmaster: decisions.grandmaster ? COSTS.grandmaster : 0,
+      digital: decisions.digital ? COSTS.digital : 0,
+      tournament: tournamentCost(decisions),
+      pizza: decisions.pizza ? COSTS.pizza : 0,
+      accounting: decisions.accounting ? COSTS.accounting : 0,
+      library:
+        decisions.library === "full"
+          ? COSTS.libraryFull
+          : decisions.library === "reduced"
+            ? COSTS.libraryReduced
+            : 0,
+    };
+    const spent = Object.values(items).reduce((sum, value) => sum + value, 0);
+    return { items, spent, remaining: LIMITS.budget - spent, valid: spent <= LIMITS.budget };
+  }
+
+  function hasFundedMemberInitiative(decisions, key) {
+    if (key === "library") return decisions.library !== "none";
+    return Boolean(decisions[key]);
+  }
+
+  function countPresidentialIdeas(decisions) {
+    return Number(decisions.pizza) + Number(decisions.accounting) + Number(decisions.library !== "none");
+  }
+
+  function tournamentFairness(decisions) {
+    const tournament = decisions.tournament;
+    if (tournament.mode === "equal") {
+      if (tournament.equalContribution === 0) return 0;
+      return 15;
+    }
+    if (tournament.selectedCount === 0 || tournament.selectedCount === LIMITS.members) return 0;
+    return {
+      lottery: 8,
+      need: 11,
+      qualification: 3,
+      first: -8,
+    }[tournament.selectedPolicy];
+  }
+
+  function decisionReview(input, consultation, year, mode = "candidate") {
+    const decisions = normalizeDecisions(input);
+    const normalizedMode = normalizeMode(mode);
+    const budget = calculateBudget(decisions);
+    const tournamentSpend = tournamentCost(decisions);
+    const operational = clamp(
+      (decisions.clocks / LIMITS.clocksNeeded) * 25 +
+        (decisions.registration ? 40 : 0) +
+        (decisions.computer ? 35 : 0),
+    );
+
+    const consultationValue = consultation === "before" ? 20 : consultation === "after" ? 8 : 0;
+    const tournamentReach = decisions.tournament.mode === "equal"
+      ? (decisions.tournament.equalContribution / COSTS.tournamentEntry) * 42
+      : (decisions.tournament.selectedCount / LIMITS.members) * 42;
+    const knownMemberPriority = consultation === "before" ? year.topMemberInitiative : "library";
+    const priorityValue = hasFundedMemberInitiative(decisions, knownMemberPriority) ? 23 : 0;
+    const memberResponsiveness = clamp(
+      consultationValue + tournamentReach + Math.max(-5, tournamentFairness(decisions) * 0.75) + priorityValue,
+    );
+
+    let jesse = decisions.grandmaster ? 78 : 37;
+    let taylor = decisions.digital ? 78 : 37;
+    let robin = tournamentSpend === 0 ? 25 : tournamentSpend < 200 ? 40 : tournamentSpend < 400 ? 58 : 74;
+    robin += tournamentFairness(decisions) * 0.6;
+    if (decisions.accounting) {
+      jesse += 8;
+      taylor += 8;
+      robin += 8;
+    }
+    const coalition = clamp((jesse + taylor + robin) / 3);
+
+    const ideaCount = countPresidentialIdeas(decisions);
+    const leadershipInitiative = ideaCount === 0
+      ? 18
+      : clamp(52 + ideaCount * 12 + (decisions.library === "full" ? 8 : 0));
+
+    const review = {
+      operational,
+      memberResponsiveness,
+      coalition,
+      leadershipInitiative,
+    };
+    if (normalizedMode === "grandmaster") {
+      review.financialResilience = decisions.computer ? clamp((budget.remaining / 150) * 100) : 0;
+    }
+    return review;
+  }
+
+  function snapshot(metrics, committee) {
+    return {
+      members: clamp(metrics.members, 0, 99),
+      morale: clamp(metrics.morale),
+      committee: clamp((committee.jesse + committee.taylor + committee.robin) / 3),
+      reputation: clamp(metrics.reputation),
+      standing: clamp(metrics.standing),
+      disbanded: Boolean(metrics.disbanded),
+    };
+  }
+
+  function addParagraph(paragraphs, text, kind = "neutral") {
+    paragraphs.push({ text, kind });
+  }
+
+  function simulate(input, consultation, seed, mode = "candidate") {
+    const decisions = normalizeDecisions(input);
+    const normalizedMode = normalizeMode(mode);
+    const budget = calculateBudget(decisions);
+    if (!budget.valid) throw new Error("The proposed allocation exceeds the annual budget.");
+    if (!["before", "after", "none"].includes(consultation)) {
+      throw new Error("A feedback decision is required.");
+    }
+
+    const year = generateYear(seed, normalizedMode);
+    const metrics = {
+      members: LIMITS.members,
+      morale: 55,
+      reputation: 45,
+      standing: 50,
+      disbanded: false,
+    };
+    const committee = { jesse: 50, taylor: 50, robin: 50 };
+    const quarters = [];
+    let endingReserve = budget.remaining;
+
+    // Quarter 1: consultation, budget announcement, and clock capacity.
+    const q1 = [];
+    if (consultation === "before") {
+      metrics.morale += 4;
+      addParagraph(
+        q1,
+        "You collected feedback before making the funding decision. Members appreciated being consulted, although the survey also created stronger expectations that their priorities would influence the final allocation.",
+        "positive",
+      );
+      if (hasFundedMemberInitiative(decisions, year.topMemberInitiative)) {
+        metrics.morale += 5;
+        metrics.standing += 3;
+        addParagraph(
+          q1,
+          `The survey showed particularly strong support for ${MEMBER_INITIATIVE_LABELS[year.topMemberInitiative]}. Your budget responded to this preference.`,
+          "positive",
+        );
+      } else {
+        metrics.morale -= 7;
+        metrics.standing -= 3;
+        addParagraph(
+          q1,
+          `The survey showed particularly strong support for ${MEMBER_INITIATIVE_LABELS[year.topMemberInitiative]}. Since this proposal was not funded, some members questioned whether their feedback had meaningfully influenced the decision.`,
+          "negative",
+        );
+      }
+    } else if (consultation === "after") {
+      addParagraph(
+        q1,
+        "You decided to collect feedback after allocating the budget. This will provide useful information for the future. However, it could not improve the information available for the present decision.",
+      );
+    } else {
+      metrics.morale -= 3;
+      addParagraph(
+        q1,
+        "You made the allocation without collecting new feedback. This allowed you to decide immediately. However, the budget continued to rest on limited or potentially outdated information.",
+        "negative",
+      );
+    }
+
+    const clockCapacity = decisions.clocks * 2;
+    const clockShortage = Math.max(0, year.peakAttendance - clockCapacity);
+    if (clockShortage > 0) {
+      const departures = Math.min(metrics.members, clockShortage);
+      metrics.members -= departures;
+      metrics.morale -= Math.ceil(departures * 0.45);
+      metrics.reputation -= Math.ceil(departures * 0.9);
+      addParagraph(
+        q1,
+        `The busiest meeting attracted ${year.peakAttendance} members, but the club had clocks for only ${clockCapacity} players. ${departures} ${departures === 1 ? "member was" : "members were"} unable to play with a clock and subsequently left the club. Some also complained about the club to other local players.`,
+        "negative",
+      );
+    } else {
+      metrics.morale += 3;
+      metrics.reputation += 2;
+      addParagraph(
+        q1,
+        `The busiest meeting attracted ${year.peakAttendance} members. The club had enough clocks for everyone who attended, and the meeting proceeded without an avoidable equipment problem.`,
+        "positive",
+      );
+    }
+
+    if (countPresidentialIdeas(decisions) === 0) {
+      metrics.standing -= 18;
+      addParagraph(
+        q1,
+        "None of your own proposals received funding. Although you supported other priorities, some members of the club began to question whether you had brought a distinctive agenda to the presidency.",
+        "negative",
+      );
+    } else {
+      metrics.standing += 8 + Math.min(4, countPresidentialIdeas(decisions) - 1);
+      addParagraph(
+        q1,
+        "At least one proposal that you developed received funding. This helped demonstrate that your presidency had an agenda of its own.",
+        "positive",
+      );
+    }
+    quarters.push({
+      label: "Quarter 1",
+      title: "The budget is announced",
+      paragraphs: q1,
+      snapshot: snapshot(metrics, committee),
+    });
+
+    // Quarter 2: computer and the President's initiatives.
+    const q2 = [];
+    if (decisions.computer) {
+      metrics.morale += 3;
+      committee.jesse += 1;
+      committee.taylor += 1;
+      committee.robin += 1;
+      addParagraph(
+        q2,
+        "The damaged computer was repaired. Members were able to use the room without the continuing inconvenience created by broken equipment.",
+        "positive",
+      );
+      if (normalizedMode === "grandmaster") {
+        const repairOverrun = year.computerRepairOverrun;
+        if (repairOverrun === 0) {
+          addParagraph(
+            q2,
+            "The $100 repair cost had been based on a preliminary estimate. Once the technician opened the computer, no additional damage was found. The original estimate was therefore accurate.",
+            "positive",
+          );
+        } else {
+          const additionalDamage = {
+            50: "the power supply also needed to be replaced",
+            100: "the storage drive also needed to be replaced, and the repair required additional labour",
+            150: "the motherboard had also been damaged",
+          }[repairOverrun];
+          if (endingReserve >= repairOverrun) {
+            endingReserve -= repairOverrun;
+            committee.jesse += 2;
+            committee.taylor += 2;
+            committee.robin += 2;
+            metrics.standing += 3;
+            addParagraph(
+              q2,
+              `The $100 repair cost had been based on a preliminary estimate. Once the technician opened the computer, it became clear that ${additionalDamage}. This increased the repair cost by $${repairOverrun}. Your unspent reserve covered the additional cost, leaving $${endingReserve} available.`,
+              "positive",
+            );
+          } else {
+            const shortfall = repairOverrun - endingReserve;
+            endingReserve = 0;
+            const committeePenalty = Math.ceil(shortfall / 20);
+            metrics.morale -= Math.ceil(shortfall / 15);
+            metrics.reputation -= shortfall >= 100 ? 4 : 2;
+            metrics.standing -= Math.ceil(shortfall / 12);
+            committee.jesse -= committeePenalty;
+            committee.taylor -= committeePenalty;
+            committee.robin -= committeePenalty;
+            addParagraph(
+              q2,
+              `The $100 repair cost had been based on a preliminary estimate. Once the technician opened the computer, it became clear that ${additionalDamage}. This increased the repair cost by $${repairOverrun}. The available reserve could not cover the increase, leaving a shortfall of $${shortfall}. The committee had to make hurried reductions elsewhere, which damaged confidence in the budget.`,
+              "negative",
+            );
+          }
+        }
+      }
+    } else {
+      metrics.morale -= 8;
+      addParagraph(
+        q2,
+        "The damaged computer was not repaired. Even before any further problem occurred, members interpreted this as evidence that the condition of the club room was not a priority.",
+        "negative",
+      );
+      if (year.computerFailure) {
+        const departures = Math.ceil(metrics.members / 2);
+        metrics.members -= departures;
+        metrics.morale -= 18;
+        metrics.reputation -= 9;
+        metrics.standing -= 10;
+        addParagraph(
+          q2,
+          `The computer problem became substantially worse during an important meeting. ${departures} members—half of the club's remaining membership—subsequently stopped attending.`,
+          "negative",
+        );
+      } else {
+        addParagraph(
+          q2,
+          "The computer did not suffer a more serious failure during the year. The club therefore avoided the most severe possible consequence of deferring the repair.",
+        );
+      }
+    }
+
+    if (decisions.pizza) {
+      metrics.morale += 10;
+      committee.jesse -= 2;
+      committee.taylor -= 2;
+      committee.robin -= 2;
+      if (year.pizzaGrowth) {
+        metrics.members += year.pizzaRecruits;
+        metrics.reputation += 2;
+        metrics.standing += 3;
+        addParagraph(
+          q2,
+          `Providing pizza improved the atmosphere at weekly meetings. Attendance became more regular, and ${year.pizzaRecruits} new members joined through existing members and their friends.`,
+          "positive",
+        );
+      } else {
+        addParagraph(
+          q2,
+          "Providing pizza improved morale at weekly meetings. However, it did not produce a measurable increase in membership during this particular year.",
+          "positive",
+        );
+      }
+    }
+
+    if (decisions.accounting) {
+      committee.jesse += 8;
+      committee.taylor += 8;
+      committee.robin += 8;
+      metrics.standing += 2;
+      addParagraph(
+        q2,
+        "The accounting software reduced the time that the Executive Committee spent on routine administrative work. No regular member regarded this as an important accomplishment, but the committee found it mildly useful.",
+        "positive",
+      );
+    }
+
+    if (decisions.library === "full") {
+      const benefit = Math.max(5, Math.round(year.demand.library / 3));
+      metrics.morale += benefit;
+      metrics.reputation += 4;
+      metrics.standing += 5;
+      committee.jesse -= 3;
+      committee.taylor -= 3;
+      committee.robin -= 3;
+      addParagraph(
+        q2,
+        `The full library opened with the books that members had requested. ${year.demand.library} members used it or expressed an active interest in doing so, and several became more involved in the club.`,
+        "positive",
+      );
+    } else if (decisions.library === "reduced") {
+      committee.jesse -= 2;
+      committee.taylor -= 2;
+      committee.robin -= 2;
+      if (year.reducedLibraryMissing) {
+        metrics.morale += Math.max(1, Math.round(year.demand.library / 9));
+        metrics.standing -= 1;
+        addParagraph(
+          q2,
+          `The smaller library opened, but it did not contain several of the books that members had requested. Some members still used it; however, the compromise produced less enthusiasm than you had expected.`,
+          "negative",
+        );
+      } else {
+        metrics.morale += Math.max(3, Math.round(year.demand.library / 4));
+        metrics.reputation += 2;
+        metrics.standing += 3;
+        addParagraph(
+          q2,
+          `The smaller library contained the books that members most wanted. ${year.demand.library} members used it or expressed an active interest in doing so, making the less expensive version a useful compromise.`,
+          "positive",
+        );
+      }
+    }
+
+    if (!decisions.pizza && !decisions.accounting && decisions.library === "none") {
+      addParagraph(q2, "Since none of your own proposals were funded, there was no presidential initiative to assess during this part of the year.");
+    }
+
+    quarters.push({
+      label: "Quarter 2",
+      title: "The club experiences the operational consequences",
+      paragraphs: q2,
+      snapshot: snapshot(metrics, committee),
+    });
+
+    // Quarter 3: tournament and municipal registration.
+    const q3 = [];
+    const tournament = decisions.tournament;
+    const tournamentSpend = tournamentCost(decisions);
+    if (tournamentSpend === 0) {
+      metrics.morale -= consultation === "before" ? 17 : 12;
+      committee.robin -= 22;
+      addParagraph(
+        q3,
+        "No money was allocated to tournament entrance fees, even though all 50 members wanted to participate. Robin opposed this decision, and the absence of any support caused substantial disappointment among regular members.",
+        "negative",
+      );
+    } else if (tournament.mode === "equal") {
+      const contribution = tournament.equalContribution;
+      const share = contribution / COSTS.tournamentEntry;
+      metrics.morale += Math.round(3 + share * 13);
+      committee.robin += tournamentSpend < 200 ? -4 : tournamentSpend < 400 ? 5 : 15;
+      committee.robin += 6;
+      addParagraph(
+        q3,
+        `You divided the tournament support equally. Each of the 50 members received $${contribution} toward the $20 entrance fee. The contribution did not cover every member's entire fee, but everyone received the same assistance.`,
+        "positive",
+      );
+    } else {
+      const count = tournament.selectedCount;
+      const excluded = LIMITS.members - count;
+      const policyText = {
+        lottery: "a lottery in which every interested member had an equal chance",
+        need: "a need-based process",
+        qualification: "a competitive qualification process",
+        first: "a first-come, first-served process",
+      }[tournament.selectedPolicy];
+      const fairness = tournamentFairness(decisions);
+      metrics.morale += Math.round((count / LIMITS.members) * 15 - (excluded / LIMITS.members) * 6 + fairness);
+      committee.robin += tournamentSpend < 200 ? -8 : tournamentSpend < 400 ? 5 : 15;
+      committee.robin += Math.round(fairness * 0.5);
+      addParagraph(
+        q3,
+        `${count} ${count === 1 ? "member received" : "members received"} full tournament sponsorship. Since ${excluded} ${excluded === 1 ? "member was" : "members were"} left without full funding, the places were allocated through ${policyText}.`,
+        fairness >= 8 ? "positive" : fairness < 0 ? "negative" : "neutral",
+      );
+      if (tournament.selectedPolicy === "first" && excluded > 0) {
+        addParagraph(
+          q3,
+          "Several members argued that the procedure favored those who happened to see the announcement first, rather than those with the strongest claim to support.",
+          "negative",
+        );
+      }
+    }
+
+    if (decisions.registration) {
+      metrics.standing += 2;
+      addParagraph(
+        q3,
+        "The municipal registration fee had been paid. Whether or not the recreation department examined the record, the club's legal permission to operate was secure.",
+        "positive",
+      );
+    } else if (year.registrationCheck) {
+      metrics.disbanded = true;
+      metrics.members = 0;
+      metrics.morale = 0;
+      metrics.reputation -= 30;
+      metrics.standing = 0;
+      committee.jesse = 0;
+      committee.taylor = 0;
+      committee.robin = 0;
+      addParagraph(
+        q3,
+        "The municipal recreation department checked the club's records and discovered that the registration fee had not been paid. The club was required to disband.",
+        "critical",
+      );
+    } else if (normalizedMode === "grandmaster") {
+      metrics.standing -= 5;
+      committee.jesse -= 3;
+      committee.taylor -= 3;
+      committee.robin -= 3;
+      addParagraph(
+        q3,
+        "The municipal recreation department did not check the club's records. The club therefore avoided disbandment during this particular year. However, the unpaid fee remained visible in the year-end accounts, and the Executive Committee criticized the decision to expose the club to an avoidable risk.",
+        "negative",
+      );
+    } else {
+      addParagraph(
+        q3,
+        "The municipal recreation department did not check the club's records. The club therefore operated without paying the registration fee and avoided the possible consequence during this particular year.",
+      );
+    }
+
+    quarters.push({
+      label: "Quarter 3",
+      title: metrics.disbanded ? "The municipal risk materializes" : "The tournament approaches",
+      paragraphs: q3,
+      snapshot: snapshot(metrics, committee),
+    });
+
+    // Quarter 4: committee priorities, external growth, and year-end review.
+    const q4 = [];
+    if (!metrics.disbanded) {
+      if (decisions.grandmaster) {
+        committee.jesse += 22;
+        metrics.morale += Math.max(1, Math.round(year.demand.grandmaster / 5));
+        if (year.grandmasterMediaAttention) {
+          metrics.reputation += 15;
+          metrics.standing += 4;
+          addParagraph(
+            q4,
+            `The grandmaster coaching attracted favorable local attention. ${year.demand.grandmaster} members were directly interested in the specialized coaching, while the club received a broader reputational benefit.`,
+            "positive",
+          );
+        } else {
+          metrics.reputation += 4;
+          addParagraph(
+            q4,
+            `The grandmaster provided specialized coaching to the interested members. However, the arrangement did not attract substantial media attention during this particular year.`,
+          );
+        }
+      } else {
+        committee.jesse -= 14;
+        addParagraph(
+          q4,
+          "Jesse remained disappointed that the grandmaster coaching proposal received no funding.",
+          "negative",
+        );
+      }
+
+      if (decisions.digital) {
+        committee.taylor += 22;
+        if (year.digitalGrowth) {
+          metrics.members += year.digitalRecruits;
+          metrics.reputation += 10;
+          metrics.standing += 3;
+          addParagraph(
+            q4,
+            `The website, professional logo, and streaming software began to strengthen the club's external presence. ${year.digitalRecruits} new members joined after encountering the club online.`,
+            "positive",
+          );
+        } else {
+          metrics.reputation += 3;
+          addParagraph(
+            q4,
+            "The club developed a more professional online presence. However, this did not translate into measurable membership growth during the first year.",
+          );
+        }
+      } else {
+        committee.taylor -= 14;
+        addParagraph(
+          q4,
+          "Taylor remained disappointed that the website, logo, and streaming proposal received no funding.",
+          "negative",
+        );
+      }
+
+      if (consultation === "after") {
+        metrics.morale += 2;
+        addParagraph(
+          q4,
+          `The year-end survey revealed that ${year.demand[year.topMemberInitiative]} members were interested in ${MEMBER_INITIATIVE_LABELS[year.topMemberInitiative]}. This information arrived too late to alter the present budget, but it will improve the information available next year.`,
+          "positive",
+        );
+      }
+
+      const committeeAverageBeforeStanding = (committee.jesse + committee.taylor + committee.robin) / 3;
+      metrics.standing += (committeeAverageBeforeStanding - 50) * 0.2;
+      metrics.standing += (metrics.morale - 50) * 0.12;
+      if (metrics.members >= 50) metrics.standing += 3;
+      if (metrics.members <= 30) metrics.standing -= 6;
+
+      addParagraph(
+        q4,
+        "At the end of the year, members and the Executive Committee assessed both the visible results of the budget and the tradeoffs that you had chosen to make.",
+      );
+    } else {
+      addParagraph(
+        q4,
+        "Since the club had been required to disband, the remaining initiatives could no longer affect its year-end position.",
+        "critical",
+      );
+    }
+
+    quarters.push({
+      label: "Quarter 4",
+      title: metrics.disbanded ? "The year ends with the club disbanded" : "The year-end review takes place",
+      paragraphs: q4,
+      snapshot: snapshot(metrics, committee),
+    });
+
+    const finalSnapshot = snapshot(metrics, committee);
+    const review = decisionReview(decisions, consultation, year, normalizedMode);
+    const outcome = classifyOutcome(finalSnapshot, normalizedMode);
+
+    return {
+      seed: year.seed,
+      mode: normalizedMode,
+      year,
+      decisions,
+      consultation,
+      budget,
+      endingReserve,
+      quarters,
+      final: finalSnapshot,
+      committee: {
+        jesse: clamp(committee.jesse),
+        taylor: clamp(committee.taylor),
+        robin: clamp(committee.robin),
+      },
+      review,
+      outcome,
+    };
+  }
+
+  function classifyOutcome(final, mode = "candidate") {
+    const normalizedMode = normalizeMode(mode);
+    if (final.disbanded) {
+      return {
+        id: "disbanded",
+        title: "The club is required to disband.",
+        description: "The municipal risk materialized, and no other success could compensate for the club's loss of permission to operate.",
+      };
+    }
+    if (final.members < 35) {
+      return {
+        id: "severe-loss",
+        title: "The club survives, but it loses a substantial proportion of its members.",
+        description: "The organization remains legally active. However, the operational and membership consequences leave it in a substantially weaker position.",
+      };
+    }
+    if (final.standing < 45) {
+      return {
+        id: "presidency-risk",
+        title: "The club survives, but you are unlikely to remain President.",
+        description: "The club continues to operate, although the year-end assessment leaves your position as President in serious doubt.",
+      };
+    }
+    if (final.standing < 55) {
+      return {
+        id: "presidency-uncertain",
+        title: "The club survives, but your position as President remains uncertain.",
+        description: "The organization remains active. However, the year-end assessment leaves you vulnerable to a leadership challenge or defeat at the next election.",
+      };
+    }
+    if (final.committee < 40 || final.morale < 40) {
+      return {
+        id: "divided",
+        title: "The club survives, but substantial internal problems remain.",
+        description: "The organization remains active. However, weak support among members or within the Executive Committee threatens its ability to function effectively.",
+      };
+    }
+    const candidateStrongSignals = [
+      final.members >= 45,
+      final.morale >= 60,
+      final.committee >= 45,
+      final.reputation >= 50,
+      final.standing >= 58,
+    ].filter(Boolean).length;
+    const grandmasterScore =
+      Math.min(100, final.members * 2) * 0.18 +
+      final.morale * 0.22 +
+      final.committee * 0.2 +
+      final.reputation * 0.18 +
+      final.standing * 0.22;
+    const isStrong = normalizedMode === "grandmaster" ? grandmasterScore >= 71 : candidateStrongSignals >= 4;
+    if (isStrong) {
+      return {
+        id: "strong",
+        title: "The club finishes the year in a strong position.",
+        description: "The club remains viable, retains broad support, and enters the next budget year with a sound organizational foundation.",
+      };
+    }
+    return {
+      id: "stable",
+      title: "The club finishes the year in a stable, although imperfect, position.",
+      description: "The club remains viable, but the allocation leaves important tradeoffs and unresolved concerns for the following year.",
+    };
+  }
+
+  function describeReviewScore(score) {
+    if (score >= 80) return "Strongly addressed";
+    if (score >= 60) return "Addressed with some limitations";
+    if (score >= 40) return "Partly addressed";
+    return "Received limited attention";
+  }
+
+  root.ChessClubGame = Object.freeze({
+    COSTS,
+    LIMITS,
+    MODES,
+    MEMBER_INITIATIVE_LABELS,
+    calculateBudget,
+    classifyOutcome,
+    createDefaultDecisions,
+    decisionReview,
+    describeReviewScore,
+    generateYear,
+    normalizeDecisions,
+    normalizeMode,
+    simulate,
+    tournamentCost,
+    tournamentFairness,
+  });
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+    <script>
+(function () {
+  "use strict";
+
+  const Game = window.ChessClubGame;
+  const main = document.querySelector("#game-main");
+  const progress = document.querySelector("#progress-steps");
+  const rulesDialog = document.querySelector("#rules-dialog");
+  const toast = document.querySelector("#toast");
+  const STORAGE_KEY = "avoiding-checkmate-state-v2";
+  const PHASES = ["briefing", "feedback", "budget", "reasoning", "year", "debrief"];
+
+  const initiativeNames = {
+    grandmaster: "Grandmaster coaching",
+    digital: "Online presence",
+    pizza: "Pizza at weekly meetings",
+    library: "Chess club library",
+  };
+
+  const consultationNames = {
+    before: "Feedback collected before the funding decision",
+    after: "Feedback collected after the funding decision",
+    none: "No new feedback collected",
+  };
+
+  let state = loadState() || createInitialState();
+  let toastTimer;
+
+  function randomSeed() {
+    if (window.crypto?.getRandomValues) {
+      const values = new Uint32Array(1);
+      window.crypto.getRandomValues(values);
+      return values[0];
+    }
+    return Math.floor(Math.random() * 4294967295);
+  }
+
+  function createInitialState(seed = randomSeed(), mode = null) {
+    return {
+      phase: "briefing",
+      seed,
+      mode,
+      consultation: null,
+      decisions: Game.createDefaultDecisions(),
+      rationaleFunding: "",
+      rationaleFeedback: "",
+      result: null,
+      revealedQuarter: 1,
+    };
+  }
+
+  function loadState() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (!saved || !PHASES.includes(saved.phase)) return null;
+      saved.decisions = Game.normalizeDecisions(saved.decisions);
+      saved.mode = Game.normalizeMode(saved.mode);
+      if (saved.result) {
+        saved.result.mode = Game.normalizeMode(saved.result.mode || saved.mode);
+        if (!Number.isFinite(saved.result.endingReserve)) {
+          saved.result.endingReserve = saved.result.budget?.remaining || 0;
+        }
+      }
+      saved.seed = Number(saved.seed) >>> 0;
+      saved.rationaleFunding = saved.rationaleFunding || "";
+      saved.rationaleFeedback = saved.rationaleFeedback || "";
+      saved.revealedQuarter = Math.max(1, Math.min(4, saved.revealedQuarter || 1));
+      if ((saved.phase === "year" || saved.phase === "debrief") && !saved.result) return null;
+      return saved;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (_error) {
+      // The game remains usable when browser storage is unavailable.
+    }
+  }
+
+  function escapeHTML(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function money(value) {
+    return `$${Number(value).toLocaleString("en-US")}`;
+  }
+
+  function showToast(message) {
+    window.clearTimeout(toastTimer);
+    toast.textContent = message;
+    toast.classList.add("visible");
+    toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 2600);
+  }
+
+  function goTo(phase) {
+    state.phase = phase;
+    saveState();
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.setTimeout(() => main.focus({ preventScroll: true }), 50);
+  }
+
+  function updateProgress() {
+    const currentIndex = PHASES.indexOf(state.phase);
+    progress.querySelectorAll("li").forEach((item, index) => {
+      item.classList.toggle("active", index === currentIndex);
+      item.classList.toggle("complete", index < currentIndex);
+      const number = item.querySelector("span");
+      number.textContent = index < currentIndex ? "✓" : String(index + 1);
+    });
+  }
+
+  function render() {
+    updateProgress();
+    const views = {
+      briefing: renderBriefing,
+      feedback: renderFeedback,
+      budget: renderBudget,
+      reasoning: renderReasoning,
+      year: renderYear,
+      debrief: renderDebrief,
+    };
+    main.innerHTML = views[state.phase]();
+  }
+
+  function renderBriefing() {
+    const modeChoice = (id, title, level, description) => `
+      <button class="choice-card mode-card ${state.mode === id ? "selected" : ""}" data-action="choose-mode" data-value="${id}" type="button" aria-pressed="${state.mode === id}">
+        <span class="mode-level">${level}</span>
+        <h3>${title}</h3>
+        <p>${description}</p>
+        <span class="choice-selected-label">${state.mode === id ? "Selected" : "Select this mode"}</span>
+      </button>
+    `;
+    return `
+      <section class="page-grid" aria-labelledby="briefing-title">
+        <div>
+          <p class="eyebrow">President of the Rochester Chess Club</p>
+          <h1 id="briefing-title">Your first budget may determine whether the club survives.</h1>
+          <p class="lead">
+            You are the newly elected President of a local chess club. You have $1,000, 50 regular members, and an Executive Committee whose priorities do not always agree with those of the wider membership.
+          </p>
+          <p class="copy">
+            Some expenditures may improve morale, prestige, or future growth. Others concern the club's immediate ability to continue operating. You cannot satisfy every demand, and the consequences of several decisions are uncertain.
+          </p>
+          <h2 class="mode-heading">Select the level of difficulty</h2>
+          <div class="mode-grid">
+            ${modeChoice(
+              "candidate",
+              "Candidate Master",
+              "Current mode",
+              "The consequences are comparatively forgiving. Careful allocations usually produce a strong or stable year, although obvious risks may still have severe consequences.",
+            )}
+            ${modeChoice(
+              "grandmaster",
+              "Grandmaster",
+              "Difficult mode",
+              "The same budget and proposals apply. However, the year-end standard is more demanding, and the $100 computer repair may cost as much as $150 more once the technician inspects the damage.",
+            )}
+          </div>
+          <div class="button-row">
+            <button class="button button-primary" data-action="begin" type="button" ${state.mode ? "" : "disabled"}>Begin the case</button>
+          </div>
+        </div>
+        <aside class="briefing-card" aria-label="The situation at the beginning of the year">
+          <div class="briefing-visual"><span class="briefing-piece" aria-hidden="true">♔</span></div>
+          <div class="briefing-stats">
+            <div class="briefing-stat"><strong>$1,000</strong><span>Annual budget</span></div>
+            <div class="briefing-stat"><strong>50</strong><span>Regular members</span></div>
+            <div class="briefing-stat"><strong>20</strong><span>Average attendance</span></div>
+          </div>
+        </aside>
+      </section>
+    `;
+  }
+
+  function renderFeedback() {
+    const choice = (id, number, title, description) => `
+      <button class="choice-card ${state.consultation === id ? "selected" : ""}" data-action="choose-feedback" data-value="${id}" type="button" aria-pressed="${state.consultation === id}">
+        <span class="choice-number">${number}</span>
+        <h3>${title}</h3>
+        <p>${description}</p>
+        <span class="choice-selected-label">${state.consultation === id ? "Selected" : "Select this approach"}</span>
+      </button>
+    `;
+
+    return `
+      <section aria-labelledby="feedback-title">
+        <p class="eyebrow">${Game.MODES[state.mode]} mode · First decision</p>
+        <h1 id="feedback-title">When will you collect feedback from the club's members?</h1>
+        <p class="lead">
+          The club has not collected information from its members for some time. The information presently available may therefore be limited or outdated.
+        </p>
+        <div class="choice-grid">
+          ${choice(
+            "before",
+            "A",
+            "Collect feedback before making the funding decision",
+            "This would provide better information and give members a voice in the process. However, asking members what they want may create stronger expectations that the final budget will respond to their priorities.",
+          )}
+          ${choice(
+            "after",
+            "B",
+            "Collect feedback after making the funding decision",
+            "This would provide useful information for future decisions without creating expectations during the present allocation. However, the new information would arrive too late to improve this year's budget.",
+          )}
+          ${choice(
+            "none",
+            "C",
+            "Do not collect new feedback this year",
+            "This would allow you to make the funding decision immediately. However, you would continue to operate using limited or potentially outdated information about what members want from the club.",
+          )}
+        </div>
+        <div class="button-row">
+          <button class="button button-secondary" data-action="back" data-target="briefing" type="button">Return to the briefing</button>
+          <button class="button button-primary" data-action="to-budget" type="button" ${state.consultation ? "" : "disabled"}>Continue to the budget</button>
+        </div>
+      </section>
+    `;
+  }
+
+  function surveyPanel(year) {
+    if (state.consultation !== "before") return "";
+    const cells = [
+      [year.demand.tournament, "Tournament support"],
+      [year.demand.grandmaster, "Grandmaster coaching"],
+      [year.demand.digital, "Online presence"],
+      [year.demand.pizza, "Pizza"],
+      [year.demand.library, "Library"],
+    ];
+    return `
+      <section class="survey-panel" aria-labelledby="survey-results-title">
+        <h3 id="survey-results-title">Feedback collected from the regular members</h3>
+        <p>
+          All 50 members want assistance with the tournament entrance fee. For the other proposals, the survey produced the following current expressions of interest.
+        </p>
+        <div class="survey-grid">
+          ${cells.map(([count, label]) => `<div class="survey-result"><strong>${count}</strong><span>${label}</span></div>`).join("")}
+        </div>
+        <p class="expectation-chip">
+          The strongest expectation beyond tournament support concerns ${escapeHTML(Game.MEMBER_INITIATIVE_LABELS[year.topMemberInitiative])}.
+        </p>
+      </section>
+    `;
+  }
+
+  function proposalCard({
+    key,
+    icon,
+    title,
+    owner,
+    cost,
+    description,
+    funded,
+    controls,
+    expectation = false,
+  }) {
+    return `
+      <article class="proposal-card ${funded ? "funded" : ""}" data-proposal="${key}">
+        <div class="proposal-topline">
+          <div class="proposal-title-wrap">
+            <span class="proposal-icon" aria-hidden="true">${icon}</span>
+            <div>
+              <h3>${title}</h3>
+              <p class="proposal-owner">${owner}</p>
+              ${expectation ? '<span class="expectation-chip">Strong expectation in the current survey</span>' : ""}
+            </div>
+          </div>
+          <span class="cost-chip">${cost}</span>
+        </div>
+        <p class="proposal-description">${description}</p>
+        <div class="proposal-controls">${controls}</div>
+      </article>
+    `;
+  }
+
+  function toggleControl(key, funded, fundLabel = "Fund this proposal") {
+    return `
+      <span class="status-chip">${funded ? "Included in the budget" : "Not funded"}</span>
+      <button class="button ${funded ? "button-secondary" : "button-primary"} button-small" data-action="toggle-proposal" data-key="${key}" type="button">
+        ${funded ? "Remove funding" : fundLabel}
+      </button>
+    `;
+  }
+
+  function memberInformation(key, year, previousText) {
+    if (state.consultation !== "before") return previousText;
+    const count = year.demand[key];
+    return `The current survey found that ${count} ${count === 1 ? "member is" : "members are"} interested in this proposal.`;
+  }
+
+  function tournamentControls(decisions) {
+    const tournament = decisions.tournament;
+    if (tournament.mode === "selected") {
+      return `
+        <div class="tournament-options">
+          <div class="segmented" aria-label="Tournament funding method">
+            <button class="active" data-action="set-tournament-mode" data-value="selected" type="button">Full fees for selected members</button>
+            <button data-action="set-tournament-mode" data-value="equal" type="button">Equal contribution for all members</button>
+          </div>
+          <label>
+            <span class="field-label">Number of members receiving the full $20 entrance fee</span>
+            <span class="range-control">
+              <input data-range="selected-count" type="range" min="0" max="50" step="1" value="${tournament.selectedCount}" />
+              <output data-output="selected-count">${tournament.selectedCount} members · ${money(tournament.selectedCount * 20)}</output>
+              <span class="range-labels"><span>No members</span><span>All 50 members</span></span>
+            </span>
+          </label>
+          ${
+            tournament.selectedCount > 0 && tournament.selectedCount < 50
+              ? `<label>
+                  <span class="field-label">How will the sponsored places be allocated?</span>
+                  <select class="select-control" data-change="tournament-policy">
+                    <option value="lottery" ${tournament.selectedPolicy === "lottery" ? "selected" : ""}>A lottery open to all interested members</option>
+                    <option value="need" ${tournament.selectedPolicy === "need" ? "selected" : ""}>A need-based process</option>
+                    <option value="qualification" ${tournament.selectedPolicy === "qualification" ? "selected" : ""}>A competitive qualification process</option>
+                    <option value="first" ${tournament.selectedPolicy === "first" ? "selected" : ""}>A first-come, first-served process</option>
+                  </select>
+                </label>`
+              : ""
+          }
+        </div>
+      `;
+    }
+
+    return `
+      <div class="tournament-options">
+        <div class="segmented" aria-label="Tournament funding method">
+          <button data-action="set-tournament-mode" data-value="selected" type="button">Full fees for selected members</button>
+          <button class="active" data-action="set-tournament-mode" data-value="equal" type="button">Equal contribution for all members</button>
+        </div>
+        <label>
+          <span class="field-label">Contribution toward each member's $20 entrance fee</span>
+          <span class="range-control">
+            <input data-range="equal-contribution" type="range" min="0" max="20" step="1" value="${tournament.equalContribution}" />
+            <output data-output="equal-contribution">${money(tournament.equalContribution)} each · ${money(tournament.equalContribution * 50)}</output>
+            <span class="range-labels"><span>No contribution</span><span>Full $20 fee</span></span>
+          </span>
+        </label>
+      </div>
+    `;
+  }
+
+  function renderBudget() {
+    const decisions = state.decisions;
+    const budget = Game.calculateBudget(decisions);
+    const year = Game.generateYear(state.seed, state.mode);
+    const top = state.consultation === "before" ? year.topMemberInitiative : null;
+
+    const clockControls = `
+      <div class="stepper" aria-label="Number of clocks">
+        <button data-action="adjust-clocks" data-delta="-1" type="button" ${decisions.clocks === 0 ? "disabled" : ""} aria-label="Remove one clock">−</button>
+        <output>${decisions.clocks} of 15</output>
+        <button data-action="adjust-clocks" data-delta="1" type="button" ${decisions.clocks === 15 ? "disabled" : ""} aria-label="Add one clock">+</button>
+      </div>
+      <span class="status-chip">Capacity for ${decisions.clocks * 2} players</span>
+    `;
+
+    const libraryControls = `
+      <div class="segmented" aria-label="Library funding level">
+        <button class="${decisions.library === "none" ? "active" : ""}" data-action="set-library" data-value="none" type="button">Do not fund</button>
+        <button class="${decisions.library === "reduced" ? "active" : ""}" data-action="set-library" data-value="reduced" type="button">Reduced version · $200</button>
+        <button class="${decisions.library === "full" ? "active" : ""}" data-action="set-library" data-value="full" type="button">Full version · $500</button>
+      </div>
+      <span class="status-chip">${decisions.library === "none" ? "Not funded" : decisions.library === "reduced" ? "Reduced version included" : "Full version included"}</span>
+    `;
+
+    return `
+      <section aria-labelledby="budget-title">
+        <p class="eyebrow">${Game.MODES[state.mode]} mode · Annual allocation</p>
+        <h1 id="budget-title">How will you allocate the club's $1,000?</h1>
+        <p class="lead">
+          You may leave money unspent as a reserve. You may also accept operational risks, although the consequences of doing so can be severe.
+        </p>
+        ${surveyPanel(year)}
+
+        <div class="page-grid page-grid-wide">
+          <div>
+            <div class="section-heading">
+              <h2>Survival needs</h2>
+              <p>These expenditures concern the club's ability to operate reliably.</p>
+            </div>
+            <div class="proposal-list">
+              ${proposalCard({
+                key: "clocks",
+                icon: "◷",
+                title: "Purchase the chess clocks that the club needs",
+                owner: "Operational need",
+                cost: "$5 for each clock",
+                description:
+                  "One clock is required for each game. Fifteen clocks would allow as many as 30 members to play at the same time. When members attend and cannot play with a clock, they drop out and may damage the club's reputation.",
+                funded: decisions.clocks > 0,
+                controls: clockControls,
+              })}
+              ${proposalCard({
+                key: "registration",
+                icon: "§",
+                title: "Pay the municipal registration fee",
+                owner: "Operational need",
+                cost: "$100",
+                description:
+                  "The municipal recreation department has unreliable records and changes every year. There is a 20% chance that it will check whether the fee was paid. If the club has not paid and the department checks, the club will be required to disband.",
+                funded: decisions.registration,
+                controls: toggleControl("registration", decisions.registration, "Pay the registration fee"),
+              })}
+              ${proposalCard({
+                key: "computer",
+                icon: "▣",
+                title: "Repair the damaged computer in the club room",
+                owner: "Operational need",
+                cost: "$100",
+                description:
+                  `Not repairing the computer will damage morale. There is also a 40% chance that the problem becomes substantially worse and causes half of the club's remaining members to leave.${state.mode === "grandmaster" ? " The $100 repair cost is a preliminary estimate. Once the technician opens the computer, additional damage may increase the cost by $50, $100, or $150." : ""}`,
+                funded: decisions.computer,
+                controls: toggleControl("computer", decisions.computer, "Repair the computer"),
+              })}
+            </div>
+
+            <div class="section-heading">
+              <h2>Interests of the Executive Committee</h2>
+              <p>Rejecting these proposals may affect the support you receive within the committee.</p>
+            </div>
+            <div class="proposal-list">
+              ${proposalCard({
+                key: "grandmaster",
+                icon: "♛",
+                title: "Bring in a grandmaster to coach the club every week",
+                owner: "Jesse · Vice President of Events",
+                cost: "$300 for the year",
+                description: `On the plus side, this may bring media attention and prestige to the club. However, it is not clear how many regular members want specialized coaching every week. ${memberInformation("grandmaster", year, "Only 4 members have expressed interest based on the information presently available.")}`,
+                funded: decisions.grandmaster,
+                controls: toggleControl("grandmaster", decisions.grandmaster),
+                expectation: top === "grandmaster",
+              })}
+              ${proposalCard({
+                key: "digital",
+                icon: "⌁",
+                title: "Develop the club's online presence",
+                owner: "Taylor · Vice President of Social Media",
+                cost: "$200 for the year",
+                description: `This would provide a new website, a professional logo, and streaming software. In the long term, these measures might help attract new members. ${state.consultation === "before" ? `The current survey found that ${year.demand.digital} ${year.demand.digital === 1 ? "member is" : "members are"} interested in this proposal.` : "However, no other committee member or regular member currently appears to care about the club's online social presence."}`,
+                funded: decisions.digital,
+                controls: toggleControl("digital", decisions.digital),
+                expectation: top === "digital",
+              })}
+              ${proposalCard({
+                key: "tournament",
+                icon: "♜",
+                title: "Sponsor members' entrance fees for the town tournament",
+                owner: "Robin · Club Secretary",
+                cost: "$20 for each full entrance fee",
+                description:
+                  "All 50 members want to participate and agree that tournament support is a good idea. Fully sponsoring everyone would use the entire budget. If some members receive more support than others, the procedure used to allocate the money may affect whether the outcome is regarded as fair.",
+                funded: Game.tournamentCost(decisions) > 0,
+                controls: tournamentControls(decisions),
+                expectation: state.consultation === "before",
+              })}
+            </div>
+
+            <div class="section-heading">
+              <h2>Your ideas</h2>
+              <p>Funding none of your own proposals may make you appear to lack a distinctive agenda.</p>
+            </div>
+            <div class="proposal-list">
+              ${proposalCard({
+                key: "pizza",
+                icon: "△",
+                title: "Provide pizza at the club's weekly meetings",
+                owner: "Your proposal",
+                cost: "$200 for the year",
+                description: `You believe this could bring in more members and improve morale at the weekly meeting. However, none of the Executive Committee members believes that pizza is important to the running of the club. ${memberInformation("pizza", year, "You do not have recent information showing how many regular members support the proposal.")}`,
+                funded: decisions.pizza,
+                controls: toggleControl("pizza", decisions.pizza),
+                expectation: top === "pizza",
+              })}
+              ${proposalCard({
+                key: "accounting",
+                icon: "∑",
+                title: "Purchase new accounting software",
+                owner: "Your proposal",
+                cost: "$300 for the year",
+                description:
+                  "This would free up some of the Executive Committee's time and is likely to have a mildly positive effect on how much the committee supports you. However, no one outside the Executive Committee cares about this proposal.",
+                funded: decisions.accounting,
+                controls: toggleControl("accounting", decisions.accounting),
+              })}
+              ${proposalCard({
+                key: "library",
+                icon: "▤",
+                title: "Create a chess club library",
+                owner: "Your proposal",
+                cost: "$500, or $200 for a reduced version",
+                description: `You believe that a library would help make existing members more active. ${memberInformation("library", year, "Twenty members have expressed interest based on the information presently available.")} A reduced version costs $200, but there is a 20% chance that it will not contain books that members requested. None of the Executive Committee members believes that the library is a good idea. “Books are redundant,” they tell you.`,
+                funded: decisions.library !== "none",
+                controls: libraryControls,
+                expectation: top === "library",
+              })}
+            </div>
+          </div>
+
+          <aside class="sticky-column">
+            ${renderBudgetSidebar(budget)}
+          </aside>
+        </div>
+      </section>
+    `;
+  }
+
+  function budgetLineItems(budget) {
+    const labels = {
+      clocks: "Chess clocks",
+      registration: "Registration fee",
+      computer: "Computer repair",
+      grandmaster: "Grandmaster coaching",
+      digital: "Online presence",
+      tournament: "Tournament support",
+      pizza: "Pizza",
+      accounting: "Accounting software",
+      library: "Chess club library",
+    };
+    return Object.entries(budget.items)
+      .filter(([, amount]) => amount > 0)
+      .map(([key, amount]) => `<li><span>${labels[key]}</span><strong>${money(amount)}</strong></li>`)
+      .join("");
+  }
+
+  function renderBudgetSidebar(budget) {
+    const risks = [];
+    if (state.decisions.clocks < 15) risks.push(`Only ${state.decisions.clocks} of the 15 clocks have been funded.`);
+    if (!state.decisions.registration) risks.push("The municipal registration fee has not been funded.");
+    if (!state.decisions.computer) risks.push("The damaged computer has not been repaired.");
+    if (!state.decisions.pizza && !state.decisions.accounting && state.decisions.library === "none") {
+      risks.push("None of your own proposals has been funded.");
+    }
+    const percentage = Math.min(100, Math.max(0, (budget.spent / 1000) * 100));
+    return `
+      <section class="side-card budget-card" id="budget-sidebar" aria-live="polite">
+        <div class="budget-total ${budget.remaining < 0 ? "negative" : ""}">
+          <small>${budget.remaining >= 0 ? "Money remaining" : "Amount over budget"}</small>
+          <strong>${money(Math.abs(budget.remaining))}</strong>
+          <div class="budget-progress" aria-hidden="true"><span style="width:${percentage}%"></span></div>
+          <span>${money(budget.spent)} of $1,000 allocated</span>
+        </div>
+        <ul class="budget-lines">
+          ${budgetLineItems(budget) || "<li><span>No funding allocated</span><strong>$0</strong></li>"}
+          ${budget.remaining > 0 ? `<li><span>Unspent reserve</span><strong>${money(budget.remaining)}</strong></li>` : ""}
+        </ul>
+      </section>
+      ${state.mode === "grandmaster" ? '<div class="note-box"><strong>Grandmaster mode:</strong> If you repair the computer, the technician may discover additional damage. Any unspent money will be available to cover an increase in the repair cost.</div>' : ""}
+      ${risks.length ? `<div class="warning-box"><strong>Risks in the present allocation</strong><ul class="compact-list">${risks.map((risk) => `<li>${risk}</li>`).join("")}</ul></div>` : ""}
+      ${budget.remaining < 0 ? '<div class="warning-box">The allocation cannot be submitted until it is reduced to $1,000 or less.</div>' : ""}
+      <div class="button-row">
+        <button class="button button-secondary" data-action="back" data-target="feedback" type="button">Review feedback decision</button>
+        <button class="button button-primary" data-action="to-reasoning" type="button" ${budget.valid ? "" : "disabled"}>Review the allocation</button>
+      </div>
+    `;
+  }
+
+  function updateBudgetSidebar() {
+    const current = document.querySelector("#budget-sidebar");
+    if (!current) return;
+    const wrapper = current.parentElement;
+    wrapper.innerHTML = renderBudgetSidebar(Game.calculateBudget(state.decisions));
+  }
+
+  function allocationRows(budget) {
+    const labels = {
+      clocks: `Chess clocks (${state.decisions.clocks})`,
+      registration: "Municipal registration fee",
+      computer: "Computer repair",
+      grandmaster: "Grandmaster coaching",
+      digital: "Website, logo, and streaming software",
+      tournament: tournamentAllocationLabel(),
+      pizza: "Pizza at weekly meetings",
+      accounting: "Accounting software",
+      library: state.decisions.library === "full" ? "Full chess club library" : "Reduced chess club library",
+    };
+    return Object.entries(budget.items)
+      .filter(([, amount]) => amount > 0)
+      .map(([key, amount]) => `<tr><th scope="row">${escapeHTML(labels[key])}</th><td>${money(amount)}</td></tr>`)
+      .join("");
+  }
+
+  function tournamentAllocationLabel() {
+    const tournament = state.decisions.tournament;
+    if (tournament.mode === "equal") {
+      return `${money(tournament.equalContribution)} tournament contribution for each member`;
+    }
+    return `Full tournament fees for ${tournament.selectedCount} ${tournament.selectedCount === 1 ? "member" : "members"}`;
+  }
+
+  function renderReasoning() {
+    const budget = Game.calculateBudget(state.decisions);
+    const fundingValid = state.rationaleFunding.trim().length >= 25;
+    const feedbackValid = state.rationaleFeedback.trim().length >= 25;
+    const fundingRemaining = Math.max(0, 25 - state.rationaleFunding.trim().length);
+    const feedbackRemaining = Math.max(0, 25 - state.rationaleFeedback.trim().length);
+    return `
+      <section class="page-grid" aria-labelledby="reasoning-title">
+        <div>
+          <p class="eyebrow">Before the year begins</p>
+          <h1 id="reasoning-title">Explain the reasoning behind your decisions.</h1>
+          <p class="lead">
+            Your reasoning will be preserved and shown again after the consequences are known. It will not be scored automatically.
+          </p>
+          <form class="rationale-form" id="rationale-form">
+            <div class="rationale-field">
+              <label for="funding-rationale">Why have you chosen this allocation?</label>
+              <p>Consider the tradeoffs among operational needs, regular members, the Executive Committee, and your own agenda as President.</p>
+              <textarea class="rationale-textarea" id="funding-rationale" data-rationale="funding" minlength="25" maxlength="1200" required>${escapeHTML(state.rationaleFunding)}</textarea>
+              <div class="field-footer"><span data-error="funding" class="${fundingValid || !state.rationaleFunding ? "" : "field-error"}">${fundingValid ? "Minimum requirement met" : `At least 25 characters required · ${fundingRemaining} remaining`}</span><span data-count="funding">${state.rationaleFunding.length}/1200</span></div>
+            </div>
+            <div class="rationale-field">
+              <label for="feedback-rationale">${state.consultation === "before" ? "Why did you choose to collect feedback before the funding decision?" : state.consultation === "after" ? "Why did you choose to collect feedback after the funding decision?" : "Why did you choose not to collect new feedback?"}</label>
+              <p>Consider the value of better information, the expectations created by consultation, and the timing of the decision.</p>
+              <textarea class="rationale-textarea" id="feedback-rationale" data-rationale="feedback" minlength="25" maxlength="1200" required>${escapeHTML(state.rationaleFeedback)}</textarea>
+              <div class="field-footer"><span data-error="feedback" class="${feedbackValid || !state.rationaleFeedback ? "" : "field-error"}">${feedbackValid ? "Minimum requirement met" : `At least 25 characters required · ${feedbackRemaining} remaining`}</span><span data-count="feedback">${state.rationaleFeedback.length}/1200</span></div>
+            </div>
+          </form>
+          <div class="button-row">
+            <button class="button button-secondary" data-action="back" data-target="budget" type="button">Revise the allocation</button>
+            <button class="button button-primary" id="simulate-year" data-action="simulate" type="button" ${fundingValid && feedbackValid ? "" : "disabled"}>Submit the budget and begin the year</button>
+          </div>
+        </div>
+        <aside class="sticky-column">
+          <section class="side-card">
+            <p class="eyebrow">Proposed budget</p>
+            <table class="summary-table">
+              <tbody>${allocationRows(budget) || '<tr><th scope="row">No funded proposals</th><td>$0</td></tr>'}</tbody>
+              <tfoot>
+                <tr><th scope="row">Total allocated</th><td>${money(budget.spent)}</td></tr>
+                <tr><th scope="row">Unspent reserve</th><td>${money(budget.remaining)}</td></tr>
+              </tfoot>
+            </table>
+          </section>
+          <section class="side-card">
+            <p class="eyebrow">Difficulty</p>
+            <h3>${Game.MODES[state.mode]}</h3>
+          </section>
+          <section class="side-card">
+            <p class="eyebrow">Feedback decision</p>
+            <h3>${consultationNames[state.consultation]}</h3>
+          </section>
+        </aside>
+      </section>
+    `;
+  }
+
+  function performanceLabel(status) {
+    return { green: "Strong", amber: "Mixed", red: "At risk" }[status];
+  }
+
+  function metricStatus(key, value) {
+    const thresholds = {
+      members: [45, 35],
+      morale: [60, 40],
+      committee: [60, 40],
+      reputation: [50, 40],
+      standing: [58, 45],
+    }[key];
+    return value >= thresholds[0] ? "green" : value >= thresholds[1] ? "amber" : "red";
+  }
+
+  function reviewStatus(score) {
+    return score >= 80 ? "green" : score >= 40 ? "amber" : "red";
+  }
+
+  function outcomeStatus(outcomeId) {
+    if (outcomeId === "strong") return "green";
+    if (outcomeId === "stable" || outcomeId === "presidency-uncertain") return "amber";
+    return "red";
+  }
+
+  function quarterStatus(quarter) {
+    const kinds = new Set(quarter.paragraphs.map((paragraph) => paragraph.kind));
+    if (kinds.has("critical")) return "red";
+    if (kinds.has("positive") && kinds.has("negative")) return "amber";
+    if (kinds.has("negative")) return "red";
+    if (kinds.has("positive")) return "green";
+    return "amber";
+  }
+
+  function statusLegend() {
+    return `
+      <div class="status-legend" aria-label="How to read the result colors">
+        <span class="legend-item status-green"><i aria-hidden="true"></i>Strong</span>
+        <span class="legend-item status-amber"><i aria-hidden="true"></i>Mixed</span>
+        <span class="legend-item status-red"><i aria-hidden="true"></i>At risk</span>
+      </div>
+    `;
+  }
+
+  function metricCard(key, label, value) {
+    const isMembers = key === "members";
+    const barValue = isMembers ? Math.min(100, (value / 50) * 100) : value;
+    const status = metricStatus(key, value);
+    return `
+      <div class="metric-card status-${status}" aria-label="${label}: ${value}${isMembers ? "" : " out of 100"}. ${performanceLabel(status)}.">
+        <div class="metric-card-top">
+          <strong>${value}${isMembers ? "" : "/100"}</strong>
+          <span class="performance-label">${performanceLabel(status)}</span>
+        </div>
+        <span class="metric-label">${label}</span>
+        <div class="metric-bar" aria-hidden="true"><i style="width:${barValue}%"></i></div>
+      </div>
+    `;
+  }
+
+  function renderMetrics(snapshotValue) {
+    return `
+      <div class="metrics-grid" aria-label="Current condition of the club">
+        ${metricCard("members", "Members remaining", snapshotValue.members)}
+        ${metricCard("morale", "Morale among regular members", snapshotValue.morale)}
+        ${metricCard("committee", "Support within the Executive Committee", snapshotValue.committee)}
+        ${metricCard("reputation", "The club's public reputation", snapshotValue.reputation)}
+        ${metricCard("standing", "Your standing as President", snapshotValue.standing)}
+      </div>
+    `;
+  }
+
+  function quarterCard(quarter) {
+    const status = quarterStatus(quarter);
+    return `
+      <article class="quarter-card status-${status}">
+        <p class="quarter-label">${quarter.label}</p>
+        <h3>${quarter.title}</h3>
+        ${quarter.paragraphs.map((paragraph) => `<p class="event-paragraph ${paragraph.kind}">${escapeHTML(paragraph.text)}</p>`).join("")}
+      </article>
+    `;
+  }
+
+  function renderYear() {
+    const result = state.result;
+    const visible = result.quarters.slice(0, state.revealedQuarter);
+    const currentSnapshot = visible.at(-1).snapshot;
+    const isFinal = state.revealedQuarter >= result.quarters.length;
+    return `
+      <section aria-labelledby="year-title">
+        <p class="eyebrow">${Game.MODES[result.mode]} mode · The budget year</p>
+        <h1 id="year-title">Your decisions begin to have consequences.</h1>
+        <p class="lead">
+          Some consequences follow directly from the allocation. Others depend on events that you could anticipate but could not know with certainty.
+        </p>
+        ${statusLegend()}
+        ${renderMetrics(currentSnapshot)}
+        <div class="quarter-timeline">
+          ${visible.map(quarterCard).join("")}
+        </div>
+        <div class="button-row">
+          ${
+            isFinal
+              ? '<button class="button button-primary" data-action="to-debrief" type="button">Review the complete decision</button>'
+              : `<button class="button button-primary" data-action="next-quarter" type="button">Continue to ${result.quarters[state.revealedQuarter].label}</button>`
+          }
+        </div>
+      </section>
+    `;
+  }
+
+  function reviewCard(title, score, description) {
+    const status = reviewStatus(score);
+    return `
+      <article class="review-card status-${status}">
+        <div class="review-card-top"><h3>${title}</h3><div class="review-score-wrap"><span class="performance-label">${performanceLabel(status)}</span><span class="review-score">${score}</span></div></div>
+        <p><strong>${Game.describeReviewScore(score)}.</strong> ${description}</p>
+        <div class="review-bar" aria-hidden="true"><span style="width:${score}%"></span></div>
+      </article>
+    `;
+  }
+
+  function renderDebrief() {
+    const result = state.result;
+    const budget = result.budget;
+    const overallStatus = outcomeStatus(result.outcome.id);
+    const committeePerson = (name, role, score) => {
+      const status = score >= 60 ? "green" : score >= 40 ? "amber" : "red";
+      return `<div class="committee-person status-${status}"><strong>${name}</strong><span class="committee-role">${role}</span><output>${score}/100</output><span class="performance-label">${performanceLabel(status)}</span></div>`;
+    };
+    return `
+      <section aria-labelledby="debrief-title">
+        <div class="outcome-card status-${overallStatus}">
+          <p class="eyebrow">${Game.MODES[result.mode]} mode · Year-end outcome</p>
+          <h1 id="debrief-title">${result.outcome.title}</h1>
+          <p>${result.outcome.description}</p>
+          <span class="performance-label outcome-label">Overall result · ${performanceLabel(overallStatus)}</span>
+        </div>
+
+        ${statusLegend()}
+        ${renderMetrics(result.final)}
+
+        <section class="debrief-section" aria-labelledby="decision-review-title">
+          <p class="eyebrow">Decision review</p>
+          <h2 id="decision-review-title">The allocation should be assessed separately from the outcome.</h2>
+          <p class="copy">
+            These ${result.mode === "grandmaster" ? "five" : "four"} lenses concern considerations that were visible when the decision was made. They do not increase merely because a gamble happened to succeed.
+          </p>
+          <div class="review-grid">
+            ${reviewCard("Operational needs", result.review.operational, "This considers the clocks, municipal registration, and damaged computer.")}
+            ${reviewCard("Regular members", result.review.memberResponsiveness, "This considers consultation, tournament support, procedural fairness, and the strongest current member preference.")}
+            ${reviewCard("Executive Committee", result.review.coalition, "This considers how the allocation addressed Jesse's, Taylor's, and Robin's priorities, as well as the value of the accounting software to the committee.")}
+            ${reviewCard("Your agenda as President", result.review.leadershipInitiative, "This considers whether you funded ideas of your own instead of acting only as an allocator among other people's proposals.")}
+            ${result.mode === "grandmaster" ? reviewCard("Financial resilience", result.review.financialResilience, "This considers whether the damaged computer was repaired and whether the original allocation left enough money to respond if the repair cost more than expected.") : ""}
+          </div>
+        </section>
+
+        <div class="page-grid debrief-section">
+          <section class="content-card" aria-labelledby="allocation-review-title">
+            <p class="eyebrow">Allocation</p>
+            <h2 id="allocation-review-title">Where the money went</h2>
+            <table class="summary-table">
+              <tbody>${allocationRows(budget) || '<tr><th scope="row">No funded proposals</th><td>$0</td></tr>'}</tbody>
+              <tfoot>
+                <tr><th scope="row">Total allocated</th><td>${money(budget.spent)}</td></tr>
+                ${result.mode === "grandmaster" ? `<tr><th scope="row">Reserve at the beginning of the year</th><td>${money(budget.remaining)}</td></tr><tr><th scope="row">Additional computer repair cost</th><td>${result.decisions.computer ? money(result.year.computerRepairOverrun) : "Not applicable"}</td></tr><tr><th scope="row">Reserve remaining at the end of the year</th><td>${money(result.endingReserve)}</td></tr>` : `<tr><th scope="row">Unspent reserve</th><td>${money(budget.remaining)}</td></tr>`}
+              </tfoot>
+            </table>
+          </section>
+          <aside class="content-card" aria-labelledby="committee-review-title">
+            <p class="eyebrow">Coalition</p>
+            <h2 id="committee-review-title">Support within the committee</h2>
+            <div class="committee-grid">
+              ${committeePerson("Jesse", "Events", result.committee.jesse)}
+              ${committeePerson("Taylor", "Social Media", result.committee.taylor)}
+              ${committeePerson("Robin", "Secretary", result.committee.robin)}
+            </div>
+          </aside>
+        </div>
+
+        <section class="debrief-section content-card" aria-labelledby="reasoning-review-title">
+          <p class="eyebrow">Your reasoning before the outcome was known</p>
+          <h2 id="reasoning-review-title">The rationale you recorded</h2>
+          <h3>Funding decision</h3>
+          <blockquote class="rationale-quote">${escapeHTML(state.rationaleFunding)}</blockquote>
+          <h3 style="margin-top:1.4rem">Feedback decision</h3>
+          <blockquote class="rationale-quote">${escapeHTML(state.rationaleFeedback)}</blockquote>
+        </section>
+
+        <section class="debrief-section" aria-labelledby="discussion-title">
+          <p class="eyebrow">Questions for reflection</p>
+          <h2 id="discussion-title">What should be learned from this result?</h2>
+          <ol class="discussion-list">
+            <li>Which consequences were foreseeable when you made the allocation, and which depended primarily on chance?</li>
+            <li>Did the eventual outcome make your original reasoning appear better or worse than it was at the time?</li>
+            <li>Whose interests received the greatest attention? Which stakeholders bore most of the cost of your tradeoffs?</li>
+            <li>If only some tournament entrants received full funding, was the allocation procedure substantively and procedurally fair?</li>
+            <li>What would you change if you had to make the same decision again without knowing whether the random events would repeat?</li>
+          </ol>
+        </section>
+
+        <div class="button-row">
+          <button class="button button-primary" data-action="new-year" type="button">Begin a different year</button>
+          <button class="button button-secondary" data-action="replay-year" type="button">Replay this year with different decisions</button>
+          <button class="button button-secondary" data-action="download-summary" type="button">Download the decision summary</button>
+          <button class="button button-quiet" data-action="print" type="button">Print the debrief</button>
+        </div>
+      </section>
+    `;
+  }
+
+  function summaryText() {
+    const result = state.result;
+    const budget = result.budget;
+    const labels = {
+      clocks: "Chess clocks",
+      registration: "Municipal registration fee",
+      computer: "Computer repair",
+      grandmaster: "Grandmaster coaching",
+      digital: "Website, logo, and streaming software",
+      tournament: "Tournament support",
+      pizza: "Pizza at weekly meetings",
+      accounting: "Accounting software",
+      library: "Chess club library",
+    };
+    const lines = [
+      "AVOIDING CHECKMATE! — DECISION SUMMARY",
+      "",
+      `Difficulty: ${Game.MODES[result.mode]}`,
+      result.outcome.title,
+      result.outcome.description,
+      "",
+      "ALLOCATION",
+      ...Object.entries(budget.items)
+        .filter(([, amount]) => amount > 0)
+        .map(([key, amount]) => `${labels[key]}: ${money(amount)}`),
+      `Total allocated: ${money(budget.spent)}`,
+      `Unspent reserve: ${money(budget.remaining)}`,
+      ...(result.mode === "grandmaster" ? [
+        `Additional computer repair cost: ${result.decisions.computer ? money(result.year.computerRepairOverrun) : "Not applicable"}`,
+        `Reserve remaining at the end of the year: ${money(result.endingReserve)}`,
+      ] : []),
+      "",
+      "FINAL CONDITION",
+      `Members remaining: ${result.final.members}`,
+      `Morale among regular members: ${result.final.morale}/100`,
+      `Support within the Executive Committee: ${result.final.committee}/100`,
+      `The club's public reputation: ${result.final.reputation}/100`,
+      `Your standing as President: ${result.final.standing}/100`,
+      "",
+      "DECISION REVIEW",
+      `Operational needs: ${result.review.operational}/100`,
+      `Regular members: ${result.review.memberResponsiveness}/100`,
+      `Executive Committee: ${result.review.coalition}/100`,
+      `Your agenda as President: ${result.review.leadershipInitiative}/100`,
+      ...(result.mode === "grandmaster" ? [`Financial resilience: ${result.review.financialResilience}/100`] : []),
+      "",
+      "FUNDING RATIONALE",
+      state.rationaleFunding,
+      "",
+      "FEEDBACK RATIONALE",
+      state.rationaleFeedback,
+      "",
+      `Simulation year: ${result.seed}`,
+    ];
+    return lines.join("\n");
+  }
+
+  function downloadSummary() {
+    const blob = new Blob([summaryText()], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `avoiding-checkmate-decision-${state.result.seed}.txt`;
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function resetForReplay(useSameSeed) {
+    if (useSameSeed) {
+      state = createInitialState(state.seed, state.mode);
+      state.phase = "feedback";
+    } else {
+      state = createInitialState(randomSeed(), null);
+      state.phase = "briefing";
+    }
+    saveState();
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  main.addEventListener("click", (event) => {
+    const target = event.target.closest("[data-action]");
+    if (!target || target.disabled) return;
+    const action = target.dataset.action;
+
+    if (action === "begin") goTo("feedback");
+    if (action === "choose-mode") {
+      state.mode = Game.normalizeMode(target.dataset.value);
+      state.result = null;
+      saveState();
+      render();
+    }
+    if (action === "back") goTo(target.dataset.target);
+    if (action === "choose-feedback") {
+      state.consultation = target.dataset.value;
+      state.result = null;
+      saveState();
+      render();
+    }
+    if (action === "to-budget") goTo("budget");
+    if (action === "adjust-clocks") {
+      state.decisions.clocks = Math.max(0, Math.min(15, state.decisions.clocks + Number(target.dataset.delta)));
+      saveState();
+      render();
+    }
+    if (action === "toggle-proposal") {
+      const key = target.dataset.key;
+      state.decisions[key] = !state.decisions[key];
+      saveState();
+      render();
+    }
+    if (action === "set-library") {
+      state.decisions.library = target.dataset.value;
+      saveState();
+      render();
+    }
+    if (action === "set-tournament-mode") {
+      state.decisions.tournament.mode = target.dataset.value;
+      saveState();
+      render();
+    }
+    if (action === "to-reasoning") goTo("reasoning");
+    if (action === "simulate") {
+      const fundingValid = state.rationaleFunding.trim().length >= 25;
+      const feedbackValid = state.rationaleFeedback.trim().length >= 25;
+      if (!fundingValid || !feedbackValid) {
+        showToast("Please provide both rationales before beginning the year.");
+        return;
+      }
+      state.result = Game.simulate(state.decisions, state.consultation, state.seed, state.mode);
+      state.revealedQuarter = 1;
+      goTo("year");
+    }
+    if (action === "next-quarter") {
+      state.revealedQuarter = Math.min(4, state.revealedQuarter + 1);
+      saveState();
+      render();
+      window.setTimeout(() => document.querySelector(".quarter-card:last-child")?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
+    }
+    if (action === "to-debrief") goTo("debrief");
+    if (action === "new-year") resetForReplay(false);
+    if (action === "replay-year") resetForReplay(true);
+    if (action === "download-summary") {
+      downloadSummary();
+      showToast("The decision summary has been downloaded.");
+    }
+    if (action === "print") window.print();
+  });
+
+  main.addEventListener("input", (event) => {
+    const target = event.target;
+    if (target.matches("[data-rationale]")) {
+      const type = target.dataset.rationale;
+      const value = target.value.slice(0, 1200);
+      if (type === "funding") state.rationaleFunding = value;
+      if (type === "feedback") state.rationaleFeedback = value;
+      const valid = value.trim().length >= 25;
+      const count = document.querySelector(`[data-count="${type}"]`);
+      const error = document.querySelector(`[data-error="${type}"]`);
+      if (count) count.textContent = `${value.length}/1200`;
+      if (error) {
+        const remaining = Math.max(0, 25 - value.trim().length);
+        error.textContent = valid ? "Minimum requirement met" : `At least 25 characters required · ${remaining} remaining`;
+        error.classList.toggle("field-error", !valid && Boolean(value));
+      }
+      const simulate = document.querySelector("#simulate-year");
+      if (simulate) {
+        simulate.disabled = !(
+          state.rationaleFunding.trim().length >= 25 && state.rationaleFeedback.trim().length >= 25
+        );
+      }
+      saveState();
+      return;
+    }
+
+    if (target.matches('[data-range="selected-count"]')) {
+      state.decisions.tournament.selectedCount = Number(target.value);
+      const output = document.querySelector('[data-output="selected-count"]');
+      if (output) output.textContent = `${target.value} members · ${money(Number(target.value) * 20)}`;
+      updateBudgetSidebar();
+      saveState();
+    }
+    if (target.matches('[data-range="equal-contribution"]')) {
+      state.decisions.tournament.equalContribution = Number(target.value);
+      const output = document.querySelector('[data-output="equal-contribution"]');
+      if (output) output.textContent = `${money(target.value)} each · ${money(Number(target.value) * 50)}`;
+      updateBudgetSidebar();
+      saveState();
+    }
+  });
+
+  main.addEventListener("change", (event) => {
+    const target = event.target;
+    if (target.matches('[data-change="tournament-policy"]')) {
+      state.decisions.tournament.selectedPolicy = target.value;
+      saveState();
+      render();
+    }
+    if (target.matches("[data-range]")) {
+      saveState();
+      render();
+    }
+  });
+
+  document.querySelector("#open-rules").addEventListener("click", () => rulesDialog.showModal());
+  rulesDialog.addEventListener("click", (event) => {
+    if (event.target === rulesDialog) rulesDialog.close();
+  });
+
+  render();
+})();
+
+</script>
+  </body>
+</html>
